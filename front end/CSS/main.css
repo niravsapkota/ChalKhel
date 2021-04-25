@@ -1,4 +1,24 @@
 :root{
-    background-image: linear-gradient(#252222, #1670f0);
+    background-color: linear-gradient(#252222, #1670f0);
     color: #fff;
+}
+
+body{
+    background-color: var(--background-color);
+    color: var(--color);
+}
+
+[color-theme="red"]{
+    --background-color:linear-gradient(#252222,#f01616);
+    --color:#fff;
+}
+
+[color-theme="purple"]{
+    --background-color:linear-gradient(#252222,#7016f0);
+    --color:#fff;
+}
+
+[color-theme="inverse"]{
+    --background-color:linear-gradient(#3383f3,#dadddd);
+    --color:#000;
 }
