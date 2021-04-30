@@ -5,6 +5,13 @@ from .serializers import UserSerializer, RegisterSerializer
 from django.contrib.auth import login
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
+from django.shortcuts import render
+
+class Website():
+    def register(request):
+        return render(request, 'users/register.html')
+    def login(request):
+        return render(request, 'users/login.html')
 
 # Register API
 class RegisterAPI(generics.GenericAPIView):
@@ -18,8 +25,7 @@ class RegisterAPI(generics.GenericAPIView):
         "user": UserSerializer(user, context=self.get_serializer_context()).data,
         "token": AuthToken.objects.create(user)[1]
         })
-
-
+    
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
