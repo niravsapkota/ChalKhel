@@ -33,10 +33,13 @@ class LoginAPI(KnoxLoginView):
 class ProfileAPI(generics.GenericAPIView):
     serializer_class = ProfileSerializer
     def get(self, request, *args, **kwargs):
-        user = self.kwargs['user']
-        serializer = self.get_serializer(data={"user":1})
+        user = self.kwargs['username']
+        serializer = self.get_serializer(data={"user":user})
         serializer.is_valid(raise_exception=True)
-        return Response({
-        "profile": ProfileSerializer(user, context=self.get_serializer_context()).data
+        # return Response({
+        # "profile": ProfileSerializer(user, context=self.get_serializer_context()).data,
         # "test": user
+        # })
+        return Response({
+            "user":serializer
         })

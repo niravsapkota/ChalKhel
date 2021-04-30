@@ -20,9 +20,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 # Profile Serializer
 class ProfileSerializer(serializers.ModelSerializer):
+#
+#     # lookup_field = 'user'
+#
     class Meta:
         model = UserProfile
         fields = ('user', 'bio', 'prestige_points')
         extra_kwargs = {'prestige_points': {'read_only': True}}
 
-    # def profile_get(self)
+#     # def profile_get(self)
