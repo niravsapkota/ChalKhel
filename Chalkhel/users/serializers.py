@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from .models import UserProfile
 
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
@@ -17,8 +18,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
 
-# # User Serializer
-# class ProfileSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserProfile
-#         fields = ('id', 'username', 'email')
+# Profile Serializer
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('user', 'bio', 'prestige_points')
+        extra_kwargs = {'prestige_points': {'read_only': True}}
+
+    # def profile_get(self)
