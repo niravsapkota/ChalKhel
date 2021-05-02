@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import UserProfile
+from .models import Profile
 
 # Register your models here.
-@admin.register(UserProfile)
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'bio', 'prestige_points', )
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'bio', 'prestige_points', 'avatar_hex', 'profile_pic' )
     pass
