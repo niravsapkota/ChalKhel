@@ -5,6 +5,9 @@ from .models import Forum, Post, ForumMember
 from django.contrib.auth import login, models
 from django.shortcuts import render
 
+# Hidden content can only be seen by the owner (done)
+# Contents can only be edited by the owners (done)
+
 
 class ForumDetail(mixins.RetrieveModelMixin,
                    generics.GenericAPIView):
@@ -13,16 +16,28 @@ class ForumDetail(mixins.RetrieveModelMixin,
     serializer_class = ForumSerializer
 
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        forum_data = self.queryset.get(id=kwargs['pk'])
+        if forum_data.hidden == False or forum_data.user.id == self.request.user.id:
+            return self.retrieve(request, *args, **kwargs)
+        else:
+            return Response({
+            "message": "The user has hidden the contents of this forum!",
+            })
 
     def put(self, request, *args, **kwargs):
-       serializer = self.get_serializer(self.queryset.get(id=kwargs['pk']), data=request.data)
-       serializer.is_valid(raise_exception=True)
-       forum = serializer.save()
-       return Response({
-        "message": "The forum was updated successfully!",
-        "forum": self.get_serializer(forum).data,
-        })
+        forum_data = self.queryset.get(id=kwargs['pk'])
+        if forum_data.user == self.request.user:
+            serializer = self.get_serializer(forum_data, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            forum = serializer.save()
+            return Response({
+            "message": "The forum was updated successfully!",
+            "forum": self.get_serializer(forum).data,
+            })
+        else:
+            return Response({
+            "message": "You don't have permission to edit this forum!"
+            })
 
 
 class ForumCreate(generics.GenericAPIView):
@@ -47,16 +62,28 @@ class PostDetail(mixins.RetrieveModelMixin,
     serializer_class = PostSerializer
 
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        post_data = self.queryset.get(id=kwargs['pk'])
+        if post_data.hidden == False or post_data.user.id == self.request.user.id:
+            return self.retrieve(request, *args, **kwargs)
+        else:
+            return Response({
+            "message": "The user has hidden the contents of this post!"
+            })
 
     def put(self, request, *args, **kwargs):
-       serializer = self.get_serializer(self.queryset.get(id=kwargs['pk']), data=request.data)
-       serializer.is_valid(raise_exception=True)
-       post = serializer.save()
-       return Response({
-        "message": "The post was updated successfully!",
-        "forum": self.get_serializer(post).data,
-        })
+        post_data = self.queryset.get(id=kwargs['pk'])
+        if post_data.user == self.request.user:
+            serializer = self.get_serializer(post_data, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            post = serializer.save()
+            return Response({
+            "message": "The post was updated successfully!",
+            "forum": self.get_serializer(post).data,
+            })
+        else:
+            return Response({
+            "message": "You don't have permission to edit this post!"
+            })
 
 class PostCreate(generics.GenericAPIView):
 
