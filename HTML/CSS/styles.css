@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body{
+    padding: 0;
+    margin:0;
+    background-color: #0096c7;
+    font-family: Poppins, monospace;
+}
+
+header{
+    background-color: #fff;
+    line-height: 60px;
+    display:flex;
+}
+
+.nav-bar{
+    display:flex;
+}
+
+footer{
+    line-height: 60px;
+    background-color: #fff;
+    font-size: 10;
+    color: rgba(0,0,0,.45);
+    display:flex;
+}
