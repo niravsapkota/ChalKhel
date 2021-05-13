@@ -1,0 +1,30 @@
+.post-box{
+    position: absolute;
+    width: 1023px;
+    height: 832px;
+    left: 148px;
+    top: 150px;
+    background: #FFFFFF;
+    box-shadow: -10px 5px 1px 1px rgba(92, 106, 121, 0.15);
+    border-radius: 60px;
+}
+
+.forum-box{
+    position: absolute;
+    width: 602px;
+    height: 224px;
+    left: 1214px;
+    top: 147px;
+    background: #E6F4F1;
+    border-radius: 29px;;
+}
+
+.comment-box{
+    position: absolute;
+    width: 602px;
+    height: 554px;
+    left: 1214px;
+    top: 404px;
+    background: #FFFFFF;
+    border-radius: 60px;
+}
