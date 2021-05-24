@@ -25,7 +25,7 @@ header{
 
 /*footer content*/
 footer{
-    line-height: 60px;
+    line-height: 30px;
     background-color: #fff;
     display:flex;
     position: fixed;
@@ -36,5 +36,5 @@ footer{
     font-size: 10;
     color: rgba(0,0,0,.45);
     text-align: center;
-    align-content: center;
+    align-content: stretch;
 }

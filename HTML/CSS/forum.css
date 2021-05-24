@@ -1,0 +1,13 @@
+.forum-title{
+    background-color: #fff;
+    position:absolute;
+    display: flex;
+}
+
+.post-column{
+    background-color: #0f0;
+    position: relative;
+    top: 100px;
+    left:80px;
+    width:720px;
+}
