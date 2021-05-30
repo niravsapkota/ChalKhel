@@ -1,45 +1,14 @@
-.post-box{
-    position: relative;
-    width: 1023px;
-    height: 832px;
-    left: 40px;
-    top: 20px;
-    background: #FFFFFF;
-    box-shadow: -10px 5px 1px 1px rgba(92, 106, 121, 0.15);
-    border-radius: 30px;
+.page-content{
+    grid-template-areas:
+    "lhs rhs"
+    "lhs rhs";
 }
 
-.username-date{
-    position: absolute;
-    left: 25px;
-    top:15px;
+.lhs{
+    border: 10px solid black;
 }
 
-.exit{
-    position: absolute;
-    right: 25px;
-    top:15px;
-    font-size: large;
-    color: #A0A0A0;
-    text-decoration: none;
+.rhs{
+    border: 10px solid green;
 }
 
-.forum-box{
-    position: relative;
-    width: 602px;
-    height: 224px;
-    left: 40px;
-    top: 20px;
-    background: #E6F4F1;
-    border-radius: 30px;
-}
-
-.comment-box{
-    position: relative;
-    width: 602px;
-    height: 554px;
-    left: 40px;
-    top: 20px;
-    background: #FFFFFF;
-    border-radius: 30px;
-}

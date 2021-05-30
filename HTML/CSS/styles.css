@@ -8,9 +8,15 @@ body{
 }
 /*header content*/
 header{
+    display:flex;
+    position: relative;
+    top:0;
+}
+
+.bar{
     background-color: #fff;
     line-height: 60px;
-    display:flex;
+    width:max-content;
 }
 
 .nav-bar{
@@ -18,6 +24,7 @@ header{
     right:0;
     display:flex;
 }
+
 .home-link{
     color: #000;
     text-decoration: none;
@@ -28,13 +35,13 @@ footer{
     line-height: 30px;
     background-color: #fff;
     display:flex;
-    position: fixed;
+    position: absolute;
     bottom: 0;
+    align-content: stretch;
 }
 
 .copyright{
     font-size: 10;
     color: rgba(0,0,0,.45);
     text-align: center;
-    align-content: stretch;
 }
