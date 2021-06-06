@@ -1,13 +1,27 @@
+.page-content{
+    display: grid;
+    grid-template-areas: 
+    " pc pc pc ft ft "
+    " pc pc pc ft ft "
+    " pc pc pc ic ic "
+    " pc pc pc ic ic "
+    ;
+}
+
 .forum-title{
+    grid-area: ft;
     background-color: #fff;
-    position:absolute;
-    display: flex;
+    position:relative;
 }
 
 .post-column{
+    grid-area: pc;
     background-color: #0f0;
     position: relative;
-    top: 100px;
-    left:80px;
-    width:720px;
+}
+
+.info-column{
+    grid-area: ic;
+    position: relative;
+    background-color: #99a;
 }
