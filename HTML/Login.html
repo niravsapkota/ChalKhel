@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        .login{
+            width:590px;
+            height: 600px;
+            background-color: #E6F4F1;
+            margin: 5% auto;
+            padding: 0px;
+            border-radius: 75px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 52px;
+            box-shadow: -10px 10px 10px rgba(0, 0, 0, 0.33);
+        }
+        .Log{
+            font-family: 'Poppins', sans-serif;
+            font-size: 52px;
+            padding-top: 30px;
+            background-clip: text;
+            background: linear-gradient(to bottom, #044AFF,#10EEFC);
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+     }
+        .form-text input{
+            text-align: center;
+            border-radius: 45px;
+            padding: 0px;
+            width:477px;
+            height: 70px;
+            font-family: 'Poppins', sans-serif;
+            font-weight:300;
+            font-size: 36px;
+            border-color: rgba(0, 0, 0, 0.33);
+            border-width: 5px;
+            margin: 8px;
+            outline: 0;
+        }
+        .form-text input placeholder{
+            font-weight: 300;
+        }
+        .form-text{
+            margin: 15px;
+        }
+        .but{
+            text-align: center;
+            border-radius: 45px;
+            padding-bottom: 0px;
+            width:479px;
+            height: 70px;
+            margin: 20px;
+            background-color: white;
+            color:rgba(0, 0, 0, 0.6);
+            font-family: 'Poppins', sans-serif;
+            font-weight:600;
+            font-size: 32px;
+            border-color: #00A1EF;
+            border-width: 3px;
+            display: inline-block;
+            outline: 0;
+        }
+        .btn:hover{
+            background-color:#2fb2f3;
+        }
+        .btn{
+            text-align: center;
+            border-radius: 45px;
+            padding-bottom: 8px;
+            width:479px;
+            height: 70px;
+            margin: 20px;
+            background-color: #00A1EF;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight:600;
+            font-size: 36px;
+            border-color: #00A1EF;
+            border-width: 3px;
+        }
+        .img{
+            width: 50px;
+            display: inline;
+            padding-right: 30px;
+            float:left;
+            padding-left: 20px;
+        }
+        ::-webkit-input-placeholder{
+            color:black;
+        }
+    </style>
+</head>
+<body>
+    <div class="login">
+        <h1 class="Log">Login</h1>
+        <form action="">
+            <div class="form-text">
+                <input type="Username" placeholder="Username" id="Username">
+            </div>
+            <div class="form-text">
+                <input type="Password" placeholder="Password" id="Password">
+            </div>
+            <div>
+                <button class="btn">Sign in</button>
+            </div>
+            <div>
+                <button class="but"><span><img class="img" src="google.jpg" alt="Not Found"></span>Sign in with Google</button>
+            </div>
+            
+        </form>
+    </div>
+</body>
+</html>
+
+ 
