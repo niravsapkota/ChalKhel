@@ -1,23 +1,58 @@
 .page-content{
     display: grid;
     grid-template-areas: 
-    " pc pc pc ft ft "
-    " pc pc pc ft ft "
-    " pc pc pc ic ic "
-    " pc pc pc ic ic "
+    " fb fb fb ft ft "
+    " fb fb fb ft ft "
+    " fb fb fb ic ic "
+    " fb fb fb ic ic "
     ;
+}
+
+
+@media only screen and (max-width:800px){
+    .page-content{
+        display: grid;
+        grid-template-areas: 
+        " ft ft ft ft ft "
+        " fb fb fb fb fb "
+        " fb fb fb fb fb "
+        " ic ic ic ic ic "
+        ;
+    }
+
+    .forum-title{
+        position: sticky;
+    }
+
+    .forum-body{
+        padding: 10px 10px 10px 10px;
+    }
 }
 
 .forum-title{
     grid-area: ft;
-    background-color: #fff;
     position:relative;
+    padding: 8px 8px 8px 8px;
 }
 
-.post-column{
-    grid-area: pc;
+.title-box{
+    background-color: #7fffd4;
+    border-radius: 15px;
+    padding: 5px 5px 5px 8px;
+    position: relative;
+}
+
+.forum-body{
+    grid-area: fb;
     background-color: #0f0;
     position: relative;
+    padding: 10px 10px 10px 10px;
+}
+
+.post-card{
+    border-radius: 10px;
+    background-color: #fff;
+    padding: 10px 10px 10px 10px;
 }
 
 .info-column{
