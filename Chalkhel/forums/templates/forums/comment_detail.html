@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'forums_comment_list' %}">Comment Listing</a></p>
+<table class="table">
+<tr><td>slug</td><td>{{ object.slug }}</td></tr>
+<tr><td>created</td><td>{{ object.created }}</td></tr>
+<tr><td>last_updated</td><td>{{ object.last_updated }}</td></tr>
+<tr><td>body</td><td>{{ object.body }}</td></tr>
+<tr><td>likes</td><td>{{ object.likes }}</td></tr>
+<tr><td>dislikes</td><td>{{ object.dislikes }}</td></tr>
+<tr><td>reply_count</td><td>{{ object.reply_count }}</td></tr>
+</table>
+<a class="btn btn-primary" href="{{object.get_update_url}}">Edit Comment</a>
+
+{% endblock %}
