@@ -7,7 +7,7 @@
 @media only screen and (max-width:900px){
     .page-content{
         display: grid;
-        grid-template-columns: 7fr 3fr;
+        grid-template-columns:7fr 3fr ;
     }
 }
 
@@ -28,7 +28,7 @@
     background: #FFFFFF;
     box-shadow: -10px 5px 1px 1px rgba(92, 106, 121, 0.15);
     border-radius: 20px;
-    padding: 0px 5px 15px 5px;
+    padding: 5px 10px 15px 10px;
 }
 
 .post-content{
@@ -38,14 +38,14 @@
 }
 
 .username-date{
-    font-size:15px;
+    font-size: 12px;
     color:#555;
 }
 
 .exit{
     position: absolute;
-    top: 5px;
-    right:15px;
+    top: 0px;
+    right: 10px;
     text-decoration: none;
     color: #000;
 }
@@ -56,8 +56,11 @@
 
 .tag{
     font-size: 12px;
-    padding-left: 5px;
-    background-color: aqua;
+    padding: 2px 3px 2px 3px;
+    border-radius: 10px;
+    background-color: #4fece5;
+    text-decoration: none;
+    color: #000;
 }
 
 .rhs{
@@ -81,4 +84,17 @@
     background: #FFFFFF;
     box-shadow: -10px 5px 1px 1px rgba(92, 106, 121, 0.15);
     border-radius: 20px;
+}
+
+.comment{
+    position: relative;
+}
+
+.username{
+    font-size: 12px;
+    color:#555;
+}
+
+.comment-content{
+    font-size: 15px;
 }

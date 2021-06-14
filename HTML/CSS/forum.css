@@ -1,13 +1,91 @@
-.forum-title{
-    background-color: #fff;
-    position:absolute;
-    display: flex;
+.page-content{
+    display: grid;
+    grid-template-areas: 
+    " fb fb fb ft ft "
+    " fb fb fb ft ft "
+    " fb fb fb ic ic "
+    " fb fb fb ic ic "
+    ;
+    row-gap: 10px;
+    column-gap: 10px;
+    
 }
 
-.post-column{
-    background-color: #0f0;
+
+@media only screen and (max-width:800px){
+    .page-content{
+        display: grid;
+        grid-template-areas: 
+        " ft ft ft ft ft "
+        " fb fb fb fb fb "
+        " fb fb fb fb fb "
+        " ic ic ic ic ic "
+        ;
+    }
+}
+
+.forum-title{
+    grid-area: ft;
+    position:relative;
+    padding-top: 5px;
+}
+
+
+.title-box{
+    background-color: #7fffd4;
     position: relative;
-    top: 100px;
-    left:80px;
-    width:720px;
+    padding: 0px 0px 0px 8px;
+}
+
+@media only screen and (min-width:800px) {
+    .title-box{
+        border-radius: 15px;
+        padding: 5px 5px 5px 8px;
+    }
+}
+
+.forum-body{
+    grid-area: fb;
+    position: relative;
+    padding: 10px 10px 10px 10px;
+}
+
+.forum-name{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.forum-desc{
+    font-size: 15px;
+}
+.join{
+    background-color: #7fffd4;
+    border-radius: 25px;
+}
+.post-card{
+    border-radius: 10px;
+    background-color: #fff;
+    padding: 10px 10px 10px 10px;
+}
+
+.username{
+    font-size: 10px;
+    color: #666;
+}
+
+.post-title{
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.post-desc{
+    font-size: 13px;
+    color: linear-gradient(rgba(116, 106, 106,100%),rgba(255, 255, 255, 0));
+}
+
+.info-column{
+    grid-area: ic;
+    position: relative;
+    background-color: #ccc;
+
 }
