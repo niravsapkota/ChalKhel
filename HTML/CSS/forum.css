@@ -6,6 +6,9 @@
     " fb fb fb ic ic "
     " fb fb fb ic ic "
     ;
+    row-gap: 10px;
+    column-gap: 10px;
+    
 }
 
 
@@ -19,44 +22,70 @@
         " ic ic ic ic ic "
         ;
     }
-
-    .forum-title{
-        position: sticky;
-    }
-
-    .forum-body{
-        padding: 10px 10px 10px 10px;
-    }
 }
 
 .forum-title{
     grid-area: ft;
     position:relative;
-    padding: 8px 8px 8px 8px;
+    padding-top: 5px;
 }
+
 
 .title-box{
     background-color: #7fffd4;
-    border-radius: 15px;
-    padding: 5px 5px 5px 8px;
     position: relative;
+    padding: 0px 0px 0px 8px;
+}
+
+@media only screen and (min-width:800px) {
+    .title-box{
+        border-radius: 15px;
+        padding: 5px 5px 5px 8px;
+    }
 }
 
 .forum-body{
     grid-area: fb;
-    background-color: #0f0;
     position: relative;
     padding: 10px 10px 10px 10px;
 }
 
+.forum-name{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.forum-desc{
+    font-size: 15px;
+}
+.join{
+    background-color: #7fffd4;
+    border-radius: 25px;
+}
 .post-card{
     border-radius: 10px;
     background-color: #fff;
     padding: 10px 10px 10px 10px;
 }
 
+.username{
+    font-size: 10px;
+    color: #666;
+}
+
+.post-title{
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.post-desc{
+    font-size: 13px;
+    color: linear-gradient(rgba(116, 106, 106,100%),rgba(255, 255, 255, 0));
+}
+
 .info-column{
     grid-area: ic;
     position: relative;
-    background-color: #99a;
+    background-color: #ccc;
+
 }
