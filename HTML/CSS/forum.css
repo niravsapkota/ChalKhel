@@ -38,6 +38,7 @@
     .title-box{
         border-radius: 15px;
         padding: 5px 5px 5px 8px;
+        margin: 0 0 0 0;
     }
 }
 
@@ -61,6 +62,20 @@
     background-color: #0528dd;
     color: #fff;
     border-radius: 25px;
+}
+.join:hover{
+    background-color: #e01c1c;
+}
+
+.sort-nav ul{
+    margin: 0;
+    padding: 0;
+    display: flex; 
+    list-style: none;
+}
+
+.sort-nav li{
+    padding:5px;
 }
 
 .post-card{
