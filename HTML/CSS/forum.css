@@ -1,25 +1,23 @@
 .page-content{
     display: grid;
     grid-template-areas: 
-    " fb fb fb ft ft "
-    " fb fb fb ft ft "
-    " fb fb fb ic ic "
-    " fb fb fb ic ic "
+    " fb fb fb ft "
+    " fb fb fb ft "
+    " fb fb fb ft "
+    " fb fb fb ft "
     ;
     row-gap: 10px;
-    column-gap: 10px;
-    
+    column-gap: 10px;   
 }
-
 
 @media only screen and (max-width:800px){
     .page-content{
         display: grid;
         grid-template-areas: 
-        " ft ft ft ft ft "
-        " fb fb fb fb fb "
-        " fb fb fb fb fb "
-        " ic ic ic ic ic "
+        " ft ft ft ft "
+        " fb fb fb fb "
+        " fb fb fb fb "
+        " fb fb fb fb "
         ;
     }
 }
@@ -30,9 +28,8 @@
     padding-top: 5px;
 }
 
-
 .title-box{
-    background-color: #7fffd4;
+    background-color: #a3e5ff;
     position: relative;
     padding: 0px 0px 0px 8px;
 }
@@ -48,6 +45,7 @@
     grid-area: fb;
     position: relative;
     padding: 10px 10px 10px 10px;
+    overflow-y: scroll;
 }
 
 .forum-name{
@@ -58,34 +56,40 @@
 .forum-desc{
     font-size: 15px;
 }
+
 .join{
-    background-color: #7fffd4;
+    background-color: #0528dd;
+    color: #fff;
     border-radius: 25px;
 }
+
 .post-card{
     border-radius: 10px;
     background-color: #fff;
-    padding: 10px 10px 10px 10px;
+    padding: 10px 10px 10px 12px;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
-.username{
-    font-size: 10px;
+.username-date{
+    font-size: 13px;
     color: #666;
 }
 
 .post-title{
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 600;
 }
 
 .post-desc{
-    font-size: 13px;
-    color: linear-gradient(rgba(116, 106, 106,100%),rgba(255, 255, 255, 0));
+    font-size: 16px;
+    color: #555555;
 }
 
 .info-column{
     grid-area: ic;
     position: relative;
     background-color: #ccc;
-
+    border-radius: 15px;
+    padding: 10px 10px 10px 10px;
 }

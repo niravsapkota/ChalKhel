@@ -29,6 +29,27 @@
     box-shadow: -10px 5px 1px 1px rgba(92, 106, 121, 0.15);
     border-radius: 20px;
     padding: 5px 10px 15px 10px;
+    display: grid;
+    grid-template-columns: 30px auto;
+}
+
+.like-box{
+    background-color: #aaa;
+    margin: 5px 3px 5px 3px;
+    border-radius: 10px;
+}
+:root{
+    --like:black;
+    --dislike:black;
+}
+.upvote{
+    border-radius: 20px;
+    background-color: (--like);
+}
+
+.downvote{
+    border-radius: 20px;
+    background-color: (--dislike);
 }
 
 .post-content{
@@ -39,7 +60,7 @@
 
 .username-date{
     font-size: 12px;
-    color:#555;
+    color:#666;
 }
 
 .exit{
@@ -75,7 +96,7 @@
     padding-bottom: 20px;
     background: #99eedc;
     border-radius: 15px;
-    padding: 5px 5px 5px 5px;
+    padding: 8px 10px 8px 10px;
 }
 
 .comment-box{
@@ -92,9 +113,9 @@
 
 .username{
     font-size: 12px;
-    color:#555;
+    color:#666;
 }
 
 .comment-content{
-    font-size: 15px;
+    font-size: 12px;
 }
