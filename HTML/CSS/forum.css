@@ -46,7 +46,6 @@
     grid-area: fb;
     position: relative;
     padding: 10px 10px 10px 10px;
-    overflow-y: scroll;
 }
 
 .forum-name{
@@ -63,8 +62,14 @@
     color: #fff;
     border-radius: 25px;
 }
+
 .join:hover{
     background-color: #e01c1c;
+}
+
+.join:active{
+    background-color: #e01c1c98;
+    border: 2px;
 }
 
 .sort-nav ul{
