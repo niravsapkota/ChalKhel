@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'forums_post_list' %}">Post Listing</a></p>
+<table class="table">
+<tr>
+<td>ID</td><td>Link</td>
+    <td>name</td>
+    <td>slug</td>
+    <td>created</td>
+    <td>last_updated</td>
+    <td>member_count</td>
+    <td>media_content_type</td>
+    <td>media_content</td>
+    <td>likes</td>
+    <td>dislikes</td>
+    <td>comment_count</td>
+    <td>body</td>
+</tr>
+{% for object in object_list %}
+<tr>
+    <td>{{object.pk}}</td>
+    <td><a href="{{object.get_absolute_url}}">{{object}}</a></td>
+    <td>{{ object.name }}</td>
+    <td>{{ object.slug }}</td>
+    <td>{{ object.created }}</td>
+    <td>{{ object.last_updated }}</td>
+    <td>{{ object.member_count }}</td>
+    <td>{{ object.media_content_type }}</td>
+    <td>{{ object.media_content }}</td>
+    <td>{{ object.likes }}</td>
+    <td>{{ object.dislikes }}</td>
+    <td>{{ object.comment_count }}</td>
+    <td>{{ object.body }}</td>
+</tr>
+{% endfor %}
+</table><a class="btn btn-primary" href="{% url 'forums_post_create' %}">Create new Post</a>
+{% endblock %}

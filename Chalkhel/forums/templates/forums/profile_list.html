@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'forums_profile_list' %}">Profile Listing</a></p>
+<table class="table">
+<tr>
+<td>ID</td><td>Link</td>
+    <td>slug</td>
+    <td>created</td>
+    <td>last_updated</td>
+    <td>bio</td>
+    <td>prestige_points</td>
+    <td>avatar_hexcode</td>
+    <td>profile_pic</td>
+</tr>
+{% for object in object_list %}
+<tr>
+    <td>{{object.pk}}</td>
+    <td><a href="{{object.get_absolute_url}}">{{object}}</a></td>
+    <td>{{ object.slug }}</td>
+    <td>{{ object.created }}</td>
+    <td>{{ object.last_updated }}</td>
+    <td>{{ object.bio }}</td>
+    <td>{{ object.prestige_points }}</td>
+    <td>{{ object.avatar_hexcode }}</td>
+    <td>{{ object.profile_pic }}</td>
+</tr>
+{% endfor %}
+</table><a class="btn btn-primary" href="{% url 'forums_profile_create' %}">Create new Profile</a>
+{% endblock %}
