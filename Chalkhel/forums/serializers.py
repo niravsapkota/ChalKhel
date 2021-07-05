@@ -126,3 +126,18 @@ class ForumMemberSerializer(serializers.ModelSerializer):
             'last_updated',
         )
         read_only_fields = ['created','member', 'last_updated']
+
+class NotificationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Notification
+        fields = (
+            'id',
+            'sent_date',
+            'read',
+            'verb',
+            'message',
+            'sending_user',
+            'post'
+        )
+        read_only_fields = ['id','sending_user','verb','sent_date', 'message','post']

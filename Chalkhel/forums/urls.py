@@ -12,6 +12,7 @@ router.register(r'comment', api.CommentViewSet)
 router.register(r'vote', api.VoteViewSet)
 router.register(r'forum', api.ForumViewSet)
 router.register(r'forummember', api.ForumMemberViewSet)
+router.register(r'notifications', api.NotificationViewSet)
 
 
 urlpatterns = (

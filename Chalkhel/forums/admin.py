@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Profile, Post, Comment, Vote, Forum, ForumMember
+from .models import Profile, Post, Comment, Vote, Forum, ForumMember, Notification
 
 
 
@@ -92,3 +92,18 @@ class ForumMemberAdmin(admin.ModelAdmin):
     form = ForumMemberAdminForm
     list_display = ['created', 'last_updated']
     readonly_fields = ['created', 'last_updated']
+
+
+'''Admin Features for <Notification>'''
+class NotificationAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = Notification
+        fields = '__all__'
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ['sending_user', 'receiving_user','verb', 'read', 'message', 'sent_date', 'received_date']
+    # readonly_fields = ['created', 'last_updated']
+

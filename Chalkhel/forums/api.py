@@ -1,3 +1,4 @@
+from django.db.models.fields import NullBooleanField
 from . import models
 from . import serializers
 from rest_framework import viewsets, permissions, status
@@ -6,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404
+from django.db.utils import IntegrityError
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -111,7 +113,8 @@ class VoteViewSet(viewsets.ModelViewSet):
     permission_classes = [p.IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+            serializer.save(owner=self.request.user)
+
 
 
 class ForumViewSet(viewsets.ModelViewSet):
@@ -152,3 +155,33 @@ class ForumMemberViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(member=self.request.user)
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    """ViewSet for the Notification class"""
+
+    queryset = models.Notification.objects.all()
+    serializer_class = serializers.NotificationSerializer
+    permission_classes = [p.IsReceiverOrReadOnly]
+
+    @action(methods=['get'], detail=False, permission_classes= [permissions.IsAuthenticated],
+        url_path='mynotifications')
+    def my_notifications(self, request):
+        notifications = models.Notification.objects.all().filter(receiving_user = request.user, read=False)
+        serializer = serializers.NotificationSerializer(notifications, many=True)
+        return Response({
+            "notification": serializer.data,
+        })
+
+    # @action(methods=['PUT, PATCH'], detail=False, permission_classes= [permissions.IsAuthenticated],
+    #     url_path='mynotifications/readall')
+    # def set_notifications_readall(self, request):
+    #         notifications = models.Notification.objects.all().filter(receiving_user = request.user, read=False)
+    #         # notification = None
+    #         for notification in notifications:
+    #             notification.read = True
+
+    #         serializer = serializers.NotificationSerializer(notifications, many=True)
+    #         return Response({
+    #             "notification": serializer.data,
+    #         })
+        

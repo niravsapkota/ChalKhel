@@ -1,3 +1,4 @@
+from django.core.checks import messages
 from django.urls import reverse
 from django_extensions.db.fields import AutoSlugField
 from django.db.models import CharField
@@ -219,6 +220,15 @@ class Post(models.Model):
             else:
                 instance.post.likes += 1
             instance.post.save()
+        else:
+            if instance.vote_type == 0:
+                instance.post.likes -= 1
+                instance.post.dislikes += 1
+            else:
+                instance.post.dislikes -= 1
+                instance.post.likes += 1
+            instance.post.save()
+
 
     @receiver(post_delete, sender=Vote)
     def reduce_vote_count(sender, instance, **kwargs):
@@ -304,3 +314,62 @@ class Forum(models.Model):
     def reduce_member_count(sender, instance, **kwargs):
         instance.forum.member_count -= 1
         instance.forum.save()
+
+
+class Notification(models.Model):
+    
+    #fields
+    id = models.AutoField(primary_key=True)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    sent_date = models.DateTimeField(auto_now_add=True, editable=False)
+    received_date = models.DateTimeField(auto_now=True, editable=False)
+    read = models.BooleanField(default=False)
+    verb = models.CharField(max_length=60, default='')
+    message =  models.TextField(max_length=500, default='')
+
+    #relationship-fields
+    sending_user = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE, related_name="sending_user",
+    )
+
+    receiving_user = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE, related_name="reciving_user",
+    )
+
+    #optional-fields
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE, related_name="notification_for_post"
+    )
+
+    # comment = models.ForeignKey(
+    #     Comment,
+    #     on_delete=models.CASCADE, related_name="notification_for_comment",
+    #     null=True
+    # )
+
+    @receiver(post_save, sender=Comment)
+    def create_comment_notification(sender,instance,created,**kwargs):
+        if created:
+            new_notification = Notification.objects.create(
+                sending_user = instance.owner,
+                receiving_user = instance.post.owner,
+                verb = "commented",
+                message = instance.body,
+                post = instance.post
+            )
+            new_notification.save()
+
+    @receiver(post_save, sender=Vote)
+    def create_comment_notification(sender,instance,created,**kwargs):
+        if created:
+            type = "liked" if instance.vote_type == True else "disliked"
+            new_notification = Notification.objects.create(
+                sending_user = instance.owner,
+                receiving_user = instance.post.owner,
+                verb = type,
+                post = instance.post
+            )
+            new_notification.save()
