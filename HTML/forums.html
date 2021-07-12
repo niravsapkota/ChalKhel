@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum | ChalKhel</title>
-    <link rel="stylesheet" href="CSS/styles.css">
     <link rel="stylesheet" href="CSS/forum.css">
 </head>
 
@@ -23,15 +22,19 @@
                 eum neque commodi voluptatem qui nam velit ut dolorum eos delectus accusamus non</div>
                 
                 <div>Users:<span>10</span></div>
-                
-                <span style="font-weight: 600;">Sort:</span>
-                <nav class="sort-nav">
-                    <ul>
-                        <li>Hot</li>
-                        <li>New</li>
-                        <li>Top</li>
-                    </ul>
-                </nav>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; font-size: 20px;">Sort:</span>
+                    <nav class="sort-nav">
+                        <ul>
+                            <li>Hot</li>
+                            <li>New</li>
+                            <li>Top</li>
+                        </ul>
+                    </nav>
+                </div>
+                <div id="create-post" style="align-items: center;">
+                    <button type="button" onclick="createPost()"> + Create Post </button>
+                </div>
             </div>
         </div>    
         
@@ -118,11 +121,17 @@
         </div>    
     </div>
 
-
-    
     <script>
         function joinbtn(){
-            document.getElementById("joinButton").innerHTML="Joined";
+            if(document.getElementById("joinButton").innerHTML=="Join +"){
+                document.getElementById("joinButton").innerHTML="Joined";
+            }else{
+                document.getElementById("joinButton").innerHTML="Join +";
+            }
+        }
+        
+        function createPost(){
+            window.open("txteditor.html");
         }
     </script>
 

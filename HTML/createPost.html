@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+        <title>
+            Create Post
+        </title>
+        <style>
+.title-editor{
+	border:solid 1px #ccc;
+	padding: 20px;
+    margin-top: 10px;
+	min-height:5px;
+}
+
+.editor{
+	border:solid 1px #ccc;
+	padding: 20px;
+	min-height:200px;
+}
+
+#postPost{
+    background-color: blue;
+    color: #fff;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 1em;
+    border-radius: 0.5em;
+}
+
+.toolbar{
+	border:solid 1px #ddd;
+	background:#f4f4f4;
+	padding: 5px;
+	border-radius:3px;
+}
+
+.toolbar > span{
+	cursor:pointer;
+}
+
+.toolbar > span:hover{
+	text-decoration:underline;
+}
+        </style>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    </head>
+    
+    <body>
+        <h2>Create Post</h2>
+        <div class="toolbar">
+            <a href="javascript:void(0)" onclick="format('bold')"><span class="fa fa-bold fa-fw"></span></a>
+            <a href="javascript:void(0)" onclick="format('italic')"><span class="fa fa-italic fa-fw"></span></a>
+            <a href="javascript:void(0)" onclick="format('insertunorderedlist')"><span class="fa fa-list fa-fw"></span></a>
+            <a href="javascript:void(0)" onclick="setUrl()"><span class="fa fa-link fa-fw"></span></a>
+            <span><input id="txtFormatUrl" placeholder="url" class="form-control"></span>
+        </div>
+        
+        <div class="title-editor" id="title-editor">
+        </div>
+        
+        <div class="editor" id="post-editor">
+        </div>
+        
+        <button id="postPost" type="button" onclick="postPost()">Post</button>
+    </body>
+    
+    <script>
+        
+        document.getElementById("title-editor").innerHTML =localStorage["title-editor"] || "Title";
+        document.getElementById("post-editor").innerHTML =localStorage["post-editor"] || "Post ... Lorem Ipsum dolor ...";
+        
+        function postPost(){
+            setInterval(
+                function() {
+                    localStorage["title-editor"] = document.getElementById("title-editor").innerHTML;
+                    localStorage["post-editor"] = document.getElementById("post-editor").innerHTML;
+            }, 1000); 
+        }
+
+        window.addEventListener('load', function(){
+			document.getElementById('title-editor').setAttribute('contenteditable', 'true');
+			document.getElementById('post-editor').setAttribute('contenteditable', 'true');
+        });
+
+        
+
+		function format(command, value) {
+			document.execCommand(command, false, value);
+		}
+
+		function setUrl() {
+			var url = document.getElementById('txtFormatUrl').value;
+			var sText = document.getSelection();
+			document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank">' + sText + '</a>');
+			document.getElementById('txtFormatUrl').value = '';
+		}
+    </script>
+</html>

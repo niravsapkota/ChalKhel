@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post | ChalKhel</title>
-    <link rel="stylesheet" href="CSS/styles.css">
     <link rel="stylesheet" href="CSS/posts.css">
 </head>
 
@@ -17,53 +16,71 @@
         
         <div class="lhs">
             <div class="post-box">
+                
                 <div class="like-box">
                     <div class="upvote"></div>
                     <div clas="downvote"></div>
                 </div>
+                
                 <div class="post-content">
                     <div class="username-date">
                         <img>
-                        <span>username</span>
+                        <a href="User.html" class="username">username</a>
                         <span>15/06/2021</span>
                     </div>
-                    <a href="javascript:history.back()" class="exit"><b>X</b></a>
+                    
+                    <a href="javascript:history.back()" class="exit">X</a>
+                    
                     <div class="post-head">
                         <div class="post-title"><b>Title</b></div>
                         <a href="" class="tag">Tag1</a>
                         <a href="" class="tag">Tag2</a>
                     </div>
-                    <div class="post-body"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                    Ut urna erat, placerat in ullamcorper sed, pulvinar et arcu. Phasellus cursus, 
-                    metus sed interdum posuere, dui augue ornare lorem, sed ultricies.Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                    Ut urna erat, placerat in ullamcorper sed, pulvinar et arcu. Phasellus cursus, 
-                    metus sed interdum posuere, dui augue ornare lorem, sed ultricies.
-                    </p><p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                    Ut urna erat, placerat in ullamcorper sed, pulvinar et arcu. Phasellus cursus, 
-                    metus sed interdum posuere, dui augue ornare lorem, sed ultricies.</p></div>
+                    
+                    <div class="post-body">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Ut urna erat, placerat in ullamcorper sed, pulvinar et arcu. Phasellus cursus, 
+                        metus sed interdum posuere, dui augue ornare lorem, sed ultricies.Lorem ipsum dolor
+                        sit amet, consectetur adipiscing elit. Ut urna erat, placerat in ullamcorper sed,
+                        pulvinar et arcu. Phasellus cursus, metus sed interdum posuere,
+                        dui augue ornare lorem, sed ultricies.
+                        </p>
+                        <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Ut urna erat, placerat in ullamcorper sed, pulvinar et arcu. Phasellus cursus, 
+                        metus sed interdum posuere, dui augue ornare lorem, sed ultricies.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="rhs">
             <div class="forum-box">
-                <div style="font-size: 18px;"><b><u>forum title</u></b></div>
+                <a href="Forums.html" class="forum-title">Forum Title</a>
                 <div>lorem ipsum dolor labore magni adipisci voluptas accusamus repudiandae
                 eum neque commodi voluptatem qui nam velit ut dolorum accusamus non</div>
                 <div>user no.</div>
             </div>
+
             <div class="comment-box">
                 <span style="font-size: 18px;"><b><u>Comments</u></b></span>
+                <button onclick="window.location.href='createComment.html'">+</button>
                 <div class="comment">
-                    <span class="username">username</span>
+                    <a href="User.html" class="username">username</a>
                     <span class="comment-content"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                        Ut urna erat, placerat in ullamcorper sed, pulvinar et arcu.</span>
+                        Ut urna erat, placerat in ullamcorper sed, pulvinar et arcu.
+                    </span>
+                    <div class="likereply">
+                        <span type="button">Like</span>
+                        <span>Reply</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-
+    <script>
+    </script>
 </body>
 </html>

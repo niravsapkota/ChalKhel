@@ -49,7 +49,7 @@
 }
 
 .forum-name{
-    font-size: 20px;
+    font-size: 25px;
     font-weight: 600;
 }
 
@@ -61,10 +61,7 @@
     background-color: #0528dd;
     color: #fff;
     border-radius: 25px;
-}
-
-.join:hover{
-    background-color: #e01c1c;
+    font-size: 16px;
 }
 
 .join:active{
@@ -81,6 +78,7 @@
 
 .sort-nav li{
     padding:5px;
+    padding-left:8px;
 }
 
 .post-card{
@@ -104,12 +102,4 @@
 .post-desc{
     font-size: 16px;
     color: #555555;
-}
-
-.info-column{
-    grid-area: ic;
-    position: relative;
-    background-color: #ccc;
-    border-radius: 15px;
-    padding: 10px 10px 10px 10px;
 }
