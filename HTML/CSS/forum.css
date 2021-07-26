@@ -22,6 +22,72 @@
     }
 }
 
+.navbar {
+    background-color: #EDFBFF;
+    height: 40px;
+    position: sticky;
+}
+
+.navbar ul {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -1px;
+}
+
+.navbar li {
+    list-style: none;
+    margin: 9px 10px;
+    padding: 2px 2px;
+}
+
+.navbar li a {
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    color: black;
+    font-weight: bold;
+    font-size: large;
+    margin-top: -1px;
+}
+
+#title {
+    display: inline-block;
+    margin: 0px 10px;
+    padding: 5px 5px;
+    position: absolute;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+}
+
+#Search {
+    width: 30px;
+    margin-top: -5px;
+    cursor: pointer;
+}
+
+#Avatar {
+    width: 38px;
+    margin-top: -5px;
+    cursor: pointer;
+}
+
+#Dropdown {
+    width: 30px;
+    margin-top: -5px;
+    cursor: pointer;
+}
+
+#Footer {
+    font-family: 'Montserrat', sans-serif;
+    height: 30px;
+    background-color: #EDFBFF;
+    color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    bottom: 0;
+}
+
 .forum-title{
     grid-area: ft;
     position:relative;

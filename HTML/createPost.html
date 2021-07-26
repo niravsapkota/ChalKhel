@@ -6,16 +6,32 @@
             Create Post
         </title>
         <style>
+
+body{
+    background-color: #0096c7;
+    background-image: url(img/Background.svg);
+}
+.bodyCard{
+    margin: 40px;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 20px;
+
+}
+
 .title-editor{
-	border:solid 1px #ccc;
+	border:solid 1px #666;
+    border-radius:8px ;
 	padding: 20px;
     margin-top: 10px;
 	min-height:5px;
 }
 
 .editor{
-	border:solid 1px #ccc;
+	border:solid 1px #666;
+    border-radius:8px ;
 	padding: 20px;
+    margin-top: 10px;
 	min-height:200px;
 }
 
@@ -31,7 +47,7 @@
 
 .toolbar{
 	border:solid 1px #ddd;
-	background:#f4f4f4;
+	background: #d3d3d3;
 	padding: 5px;
 	border-radius:3px;
 }
@@ -40,21 +56,20 @@
 	cursor:pointer;
 }
 
-.toolbar > span:hover{
-	text-decoration:underline;
-}
+
         </style>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
     </head>
     
     <body>
+        <div class="bodyCard">
         <h2>Create Post</h2>
         <div class="toolbar">
             <a href="javascript:void(0)" onclick="format('bold')"><span class="fa fa-bold fa-fw"></span></a>
             <a href="javascript:void(0)" onclick="format('italic')"><span class="fa fa-italic fa-fw"></span></a>
             <a href="javascript:void(0)" onclick="format('insertunorderedlist')"><span class="fa fa-list fa-fw"></span></a>
             <a href="javascript:void(0)" onclick="setUrl()"><span class="fa fa-link fa-fw"></span></a>
-            <span><input id="txtFormatUrl" placeholder="url" class="form-control"></span>
+            <span><input id="txtUrl" placeholder="url" class="form-control"></span>
         </div>
         
         <div class="title-editor" id="title-editor">
@@ -64,6 +79,7 @@
         </div>
         
         <button id="postPost" type="button" onclick="postPost()">Post</button>
+        </div>
     </body>
     
     <script>
@@ -91,10 +107,10 @@
 		}
 
 		function setUrl() {
-			var url = document.getElementById('txtFormatUrl').value;
+			var url = document.getElementById('txtUrl').value;
 			var sText = document.getSelection();
 			document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank">' + sText + '</a>');
-			document.getElementById('txtFormatUrl').value = '';
+			document.getElementById('txtUrl').value = '';
 		}
     </script>
 </html>
