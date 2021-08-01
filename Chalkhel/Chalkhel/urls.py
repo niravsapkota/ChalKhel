@@ -16,7 +16,15 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from django.urls import path, include
+from django.views.generic import TemplateView
+from django.contrib.auth.views import LogoutView
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^forums/', include('forums.urls')),
+    
+    path('', TemplateView.as_view(template_name="googleauth.html")),
+    path('accounts/', include('allauth.urls')),
+    path('logout', LogoutView.as_view()),
 ]
