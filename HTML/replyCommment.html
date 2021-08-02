@@ -19,6 +19,13 @@ body{
     max-width: 350px;
 }
 
+.prevCmt{
+    border-radius:8px ;
+	padding: 5px;
+    margin-top: 5px;
+	min-height:50px;
+}
+
 .comment-editor{
 	border:solid 1px #666;
     border-radius:8px ;
@@ -56,6 +63,10 @@ body{
     <body>
         <div class="bodyCard">
         <h3>Comment</h3>
+        
+        <div class="prevCmt" id="prevCmt">
+        </div>
+        
         <div class="toolbar">
             <a href="javascript:void(0)" onclick="format('bold')"><span class="fa fa-bold fa-fw"></span></a>
             <a href="javascript:void(0)" onclick="format('italic')"><span class="fa fa-italic fa-fw"></span></a>
@@ -63,7 +74,8 @@ body{
             <a href="javascript:void(0)" onclick="setUrl()"><span class="fa fa-link fa-fw"></span></a>
             <span><input id="txtUrl" placeholder="https://www.url.com/"></span>
         </div>
-        
+
+
         <div class="comment-editor" id="comment-editor">
         </div>
         
@@ -72,7 +84,7 @@ body{
     </body>
     
     <script>
-        
+        document.getElementById("prevCmt").innerHTML=localStorage["prevCmt"] || "previous Comment";
         document.getElementById("comment-editor").innerHTML =localStorage["comment-editor"] || "Post ... Lorem Ipsum dolor ...";
         
         function postComment(){
