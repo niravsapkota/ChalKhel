@@ -19,13 +19,6 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 import random
 
-#when new comment added increase comment count(Done)
-#when liked/disliked increase like/dislike count(Done)
-#when followed increse follower count(Done)
-#change prestige points with more likes and dislikes(Done)
-#unique voter(Done)
-#unique follower(Done)
-
 class Vote(models.Model):
 
     # Fields
@@ -68,7 +61,7 @@ class Profile(models.Model):
     bio = models.TextField(max_length=300)
     prestige_points = models.PositiveIntegerField(default=0)
     avatar_hexcode = models.CharField(max_length=10)
-    profile_pic = models.ImageField(upload_to="upload/profile/", null=True, blank=True)
+    profile_pic = models.ImageField(upload_to="post/image/", null=True, blank=True)
 
     # Relationship Fields
     user = models.OneToOneField(
@@ -164,9 +157,10 @@ class Post(models.Model):
     slug = extension_fields.AutoSlugField(populate_from='name', blank=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     hidden = models.BooleanField(default=0)
-    last_updated = models.DateTimeField(auto_now=True, editable=False)
+    last_updated = models.DateTimeField(auto_now=True, editable=True)
     media_content_type = models.SmallIntegerField(null=True, blank=True)
-    media_content = models.ImageField(upload_to="upload/post/media", null=True, blank=True)
+    # media_content = models.ImageField(upload_to="post/image/", null=True, blank=True)
+    media_content = models.FileField(upload_to='post/media_content/', null=True,blank=True, verbose_name='')
     likes = models.PositiveIntegerField(default=0)
     dislikes = models.PositiveIntegerField(default=0)
     comment_count = models.PositiveIntegerField(default=0)
@@ -193,6 +187,11 @@ class Post(models.Model):
 
     def get_update_url(self):
         return reverse('forums_post_update', args=(self.slug,))
+
+    @property
+    def photo_url(self):
+        if self.photo and hasattr(self.photo, 'url'):
+            return self.photo.url
 
     @receiver(post_save, sender=Comment)
     def increase_comment_count(sender, instance, created, **kwargs):
@@ -260,6 +259,9 @@ class Forum(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, default=None, null=False, unique=True)
     slug = extension_fields.AutoSlugField(populate_from='name', blank=True)
+    bio = models.TextField(max_length=300, blank=True)
+    cover_pic = models.ImageField(upload_to="post/image/", null=True, blank=True)
+    profile_pic = models.ImageField(upload_to="post/image/", null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     member_count = models.PositiveIntegerField(default=0)
@@ -298,3 +300,38 @@ class Forum(models.Model):
     def reduce_member_count(sender, instance, **kwargs):
         instance.forum.member_count -= 1
         instance.forum.save()
+
+
+class Notification(models.Model):
+    id = models.AutoField(primary_key=True)
+    is_read = models.PositiveSmallIntegerField(null=False, default=0)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    tag = models.CharField(max_length=255, default="", null=False, blank=True)
+
+    affected_agent = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE, related_name="affected_agent",
+    )
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    last_updated = models.DateTimeField(auto_now=True, editable=True)
+
+    def __unicode__(self):
+        return u'%s' % self.slug
+
+    @receiver(post_save, sender=Comment)
+    def create_comment_notification(sender, instance,created, **kwargs):
+        if created:
+            tag = "commented on"
+            notification = Notification.objects.create(tag=tag, affected_agent=instance.post.owner, content_object=instance)
+            notification.save()
+
+    @receiver(post_save, sender=Vote)
+    def create_vote_notification(sender, instance,created, **kwargs):
+        if created:
+            tag = "voted"
+            notification = Notification.objects.create(tag=tag, affected_agent=instance.post.owner, content_object=instance)
+            notification.save()

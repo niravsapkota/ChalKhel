@@ -1,0 +1,31 @@
+{% extends "forums/forum/forum_detail.html" %}
+
+{% block forumContent %}
+
+{% for post in posts %}
+  <div class="card border-0 border-bottom" style="width: 100%;">
+    <div class="card-body">
+      <span class="form-text fw-light">
+        <img class="rounded-circle border" width="20" height="20" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-social-logo.png">
+        <b>
+          <a href="{{post.owner.profiles.get_absolute_url}}">
+            {{post.owner}}
+          </a>
+        </b> - Posted on: {{ post.created }}
+      </span>
+      <h5 class="card-title fs-5">{{ post.name }}</h5>
+      <!-- <h6 class="card-subtitle mb-2 text-muted fs-6"><a href="{{post.get_absolute_url}}">link to post</a></h6> -->
+      <h6 class="card-subtitle mb-2 text-muted fs-6">
+        <a href="{{post.get_absolute_url}}">
+          link to post
+        </a>
+      </h6>
+      <p class="card-text fs-6">{{ post.body }}</p>
+      <a href="#" class="card-link">Like</a>
+      <a href="#" class="card-link">Dislike</a>
+      <a href="#" class="card-link">Comment</a>
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}

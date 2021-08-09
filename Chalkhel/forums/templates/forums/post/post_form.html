@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<!-- <p><a class="btn btn-default" href="{% url 'forums_post_list' %}">Post Listing</a></p>
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+{{form|crispy}}
+<button class="btn btn-primary" type="submit">Submit</button>
+</form> -->
+
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row bg-light">
+        <div class="col-11 border-right">
+          <ul class="nav border rounded">
+            <a class="btn btn-default" href="{% url 'forums_post_list' %}">Post Listing</a>
+          </ul>
+
+  <div class=" my-3 p-3 py-5 border rounded bg-white">
+    <div class="justify-content-between align-items-center mb-3">
+      <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div id="div_id_forum" class="form-group">
+        <label for="id_forum" class=" requiredField">
+            Forum
+            <span class="asteriskField">*</span>
+        </label>
+        <div class="">
+          <select name="forum" class="select form-control form-control" required="" id="id_forum">
+            <option value="" selected="">---------</option>
+
+            <option value="2">Forum object (2)</option>
+            <option value="1">Forum object (1)</option>
+          </select>
+        </div>
+
+    </div>
+      <!-- {{form|crispy}} -->
+      <div id="div_id_name" class="form-group">
+        <label for="id_name" class=" requiredField">
+            Title<span class="asteriskField">*</span>
+        </label>
+        <div class="">
+          <input type="text" name="name" maxlength="255" class="textinput textInput form-control form-control form-control" required="" id="id_name">
+        </div>
+      </div>
+
+      <div style="padding: 1% 20%; min-height:300px;" class="uploader position-relative overflow-hidden bg-light my-5 bg-dark bg-opacity-50" onclick="$('#filePhoto').click()" style="height:350px;">
+
+        <span class="position-absolute start-0 text-white text-center px-3" style=" z-index:1.5; top:40%;">
+          Drag and Drop Image/Video
+          <br>
+          Here
+          <br>
+          or
+          <br>
+          <span class="bg-transparent text-white">
+            Click Here
+          </span>
+        </span>
+          <div class=" border rounded" style="border:gray dashed;">
+            <img id="uploaded_img" src="" class="d-none img-fluid rounded" style=" z-index:1;"/>
+
+            <video id="uploaded_vid" class="d-none img-fluid rounded" controls style="z-index:1;">
+              <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+          </div>
+          <!-- <input type="file" name="userprofile_picture"  id="filePhoto" /> -->
+          <input type="file" name="media_content" accept="image/png, image/jpeg, image/gif, video/quicktime, video/mp4"
+          class="position-absolute bg-dark start-0" id="filePhoto" style="opacity:25%; width:240px; height:120%; top:-50px; z-index:3; cursor:pointer;">
+      </div>
+
+
+      <!-- {{ form.hidden|as_crispy_field }} -->
+      <textarea id="summernote" name="body" style="width:100%;"></textarea>
+      <button class="btn btn-primary my-2" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#summernote').summernote({
+          placeholder: 'write your post content here...',
+          toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['12']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']],
+            ['insert', ['link']],
+          ]
+        });
+    });
+  </script>
+{% endblock %}

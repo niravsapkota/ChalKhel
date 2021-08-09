@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<!-- <p><a class="btn btn-default" href="{% url 'forums_post_list' %}">Post Listing</a></p>
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+{{form|crispy}}
+<button class="btn btn-primary" type="submit">Submit</button>
+</form> -->
+
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row bg-light">
+        <div class="col-11 border-right">
+          <ul class="nav border rounded">
+            <a class="btn btn-default" href="{% url 'forums_post_list' %}">Post Listing</a>
+          </ul>
+
+  <div class=" my-3 p-3 py-5 border rounded bg-white">
+    <div class="justify-content-between align-items-center mb-3">
+      <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <!-- {{form|crispy}} -->
+      <div id="div_id_name" class="form-group">
+        <label for="id_name" class=" requiredField">
+            Title<span class="asteriskField">*</span>
+        </label>
+        <div class="">
+          <input type="text" name="name" maxlength="255" class="textinput textInput form-control form-control form-control" required="" id="id_name">
+        </div>
+      </div>
+
+      <div class="uploader position-relative overflow-hidden bg-light" onclick="$('#filePhoto').click()" style="
+      width:300px;
+      height:350px;">
+          click here or drag here your images for preview and set userprofile_picture data
+          <img src="" class="position-absolute" style=" width:302px; height:352px; top:-1px; left:-1px; z-index:1;"/>
+          <!-- <input type="file" name="userprofile_picture"  id="filePhoto" /> -->
+          <input type="file" name="media_content" accept="image/png, image/jpeg, image/gif, video/quicktime, video/mp4"
+          class="position-absolute bg-transparent start-0" id="filePhoto" style=" width:300px; height:400px; top:-50px; z-index:2; cursor:pointer;">
+      </div>
+
+
+      <!-- {{ form.hidden|as_crispy_field }} -->
+      <!-- {{ form.media_content_video|as_crispy_field }}
+      {{ form.media_content|as_crispy_field }} -->
+      {{ form.body|as_crispy_field }}
+      {{ form.forum|as_crispy_field }}
+      <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}

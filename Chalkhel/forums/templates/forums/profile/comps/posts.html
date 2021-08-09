@@ -1,0 +1,40 @@
+{% extends "forums/profile/profile_detail.html" %}
+
+{% block profileContent %}
+
+{% for post in posts %}
+
+  <div class="card border-0 border-bottom" style="width: 100%;">
+    <div class="card-body">
+      <span class="form-text fw-light">
+        <img class="rounded-circle border" width="20" height="20" src="{{post.owner.profiles.profile_pic.url}}">
+        <b>
+          <a href="{{post.owner.profiles.get_absolute_url}}">
+            {{post.owner}}
+          </a>
+        </b> - Posted on: {{ post.created }}
+      </span>
+      <a href="{{post.get_absolute_url}}" class="text-dark text-decoration-none">
+      <h5 class="card-title fs-5">{{ post.name }}</h5>
+    </a>
+      <!-- <h6 class="card-subtitle mb-2 text-muted fs-6"><a href="{{post.get_absolute_url}}">link to post</a></h6> -->
+      <!-- <h6 class="card-subtitle mb-2 text-muted fs-6">
+          link to post
+      </h6> -->
+      <p class="card-text fs-6">{{ post.body }}</p>
+      {% if post.voted == True %}
+        {% if post.vote_type == True %}
+          <a href="#" class="card-link">Liked</a>
+        {% endif %}
+        {% if post.vote_type == False %}
+          <a href="#" class="card-link">Disliked</a>
+        {% endif %}
+      {% endif %}
+      <a href="#" class="card-link">Like</a>
+      <a href="#" class="card-link">Dislike</a>
+      <a href="#" class="card-link">Comment</a>
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}

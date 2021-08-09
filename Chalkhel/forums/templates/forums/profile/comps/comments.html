@@ -1,0 +1,24 @@
+{% extends "forums/profile/profile_detail.html" %}
+
+{% block profileContent %}
+
+  {% for comment in comments %}
+    <div class="card-body">
+      <span class="form-text fw-light">
+        <img class="rounded-circle border" width="20" height="20" src="{{comment.owner.profiles.profile_pic.url}}">
+        <b>
+          <a href="{{profile.get_absolute_url}}">
+            {{comment.owner}}
+          </a>
+        </b> - Commented on:
+        <a href="{{comment.post.get_absolute_url}}">
+          {{comment.post.name}}
+        </a>
+        in forum
+        <a href="{{comment.post.forum.get_absolute_url}}">{{comment.post.forum.name}}</a>
+      </span>
+      <p class="card-text fs-6 my-2">{{ comment.body }}</p>
+    </div>
+  {% endfor %}
+
+{% endblock %}

@@ -19,20 +19,34 @@ urlpatterns = (
     path('api/v1/', include(router.urls)),
 )
 
+urlpatterns = (
+    # urls for Django Rest Framework API
+    path('', views.landing, name='landing'),
+)
+
 urlpatterns += (
     # urls for auth
-    path('register/', views.RegisterAPI.as_view(), name='register'),
-    path('login/', views.LoginAPI.as_view(), name='login'),
-    path('logout/', knox_views.LoginView.as_view(), name='logout'),
-    path('logoutall/', knox_views.LogoutAllView.as_view(), name='logoutall'),
+    # path('register/', views.RegisterAPI.as_view(), name='register'),
+    # path('login/', views.LoginAPI.as_view(), name='login'),
+    # path('logout/', knox_views.LoginView.as_view(), name='logout'),
+    # path('logoutall/', knox_views.LogoutAllView.as_view(), name='logoutall'),
 )
 
 
 urlpatterns += (
     # urls for Profile
+    # path('profile/', views.ProfileCreateView.as_view(), name='forums_profile_create'),
     path('profile/', views.ProfileListView.as_view(), name='forums_profile_list'),
-    path('profile/create/', views.ProfileListView.as_view(), name='forums_profile_create'),
-    path('profile/detail/<slug:slug>/', views.ProfileDetailView.as_view(), name='forums_profile_detail'),
+
+    path('profile/myprofile', views.MyProfile.posts, name='my-profile'),
+    path('profile/myprofile/comments', views.MyProfile.comments, name='my-profile-comments'),
+    path('profile/myprofile/votes', views.MyProfile.voted_posts, name='my-profile-voted-posts'),
+    path('profile/myprofile/hidden', views.MyProfile.hidden_posts, name='my-profile-hidden-posts'),
+    path('profile/myprofile/settings', views.MyProfile.settings, name='my-profile-settings'),
+
+    path('profile/detail/<slug:slug>/', views.ProfileDetailView.posts, name='forums_profile_detail'),
+    path('profile/detail/<slug:slug>/comments', views.ProfileDetailView.comments, name='forums_profile_comments'),
+
     path('profile/update/<slug:slug>/', views.ProfileUpdateView.as_view(), name='forums_profile_update'),
 
 
@@ -42,7 +56,7 @@ urlpatterns += (
 urlpatterns += (
     # urls for Post
     path('post/', views.PostListView.as_view(), name='forums_post_list'),
-    path('post/create/', views.PostCreateView.as_view(), name='forums_post_create'),
+    path('<slug:slug>/post/create/', views.PostCreateView.as_view(), name='forums_post_create'),
     path('post/detail/<slug:slug>/', views.PostDetailView.as_view(), name='forums_post_detail'),
     path('post/update/<slug:slug>/', views.PostUpdateView.as_view(), name='forums_post_update'),
 
@@ -65,6 +79,7 @@ urlpatterns += (
     path('vote/create/', views.VoteCreateView.as_view(), name='forums_vote_create'),
     path('vote/detail/<int:pk>/', views.VoteDetailView.as_view(), name='forums_vote_detail'),
     path('vote/update/<int:pk>/', views.VoteUpdateView.as_view(), name='forums_vote_update'),
+    path('vote/delete/<int:pk>/', views.VoteDeleteView.as_view(), name='forums_vote_delete'),
 
     #my-votes
     #like
@@ -90,6 +105,17 @@ urlpatterns += (
     path('forummember/create/', views.ForumMemberCreateView.as_view(), name='forums_forummember_create'),
     path('forummember/detail/<int:pk>/', views.ForumMemberDetailView.as_view(), name='forums_forummember_detail'),
     path('forummember/update/<int:pk>/', views.ForumMemberUpdateView.as_view(), name='forums_forummember_update'),
+    path('forummember/delete/<int:pk>/', views.ForumMemberDeleteView.as_view(), name='forums_forummember_delete'),
+
+    #follow-Forum
+    #unfollow-forum
+)
+
+urlpatterns += (
+    # urls for ForumMember
+    # path('forummember/', views.ForumMemberListView.as_view(), name='forums_forummember_list'),
+    path('notifications/read', views.read_all_notifications, name='forums_notifications_update'),
+    # path('forummember/delete/<int:pk>/', views.ForumMemberDeleteView.as_view(), name='forums_forummember_delete'),
 
     #follow-Forum
     #unfollow-forum
