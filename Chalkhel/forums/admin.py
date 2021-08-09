@@ -60,7 +60,7 @@ class VoteAdminForm(forms.ModelForm):
 @admin.register(Vote)
 class VoteAdmin(admin.ModelAdmin):
     form = VoteAdminForm
-    list_display = ['owner', 'post', 'created', 'last_updated', 'vote_type']
+    list_display = ['owner', 'content_object', 'content_type', 'created', 'last_updated', 'vote_type']
     readonly_fields = ['created', 'last_updated']
 
 

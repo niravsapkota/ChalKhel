@@ -18,6 +18,7 @@ from django_extensions.db import fields as extension_fields
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 import random
+from django.contrib.contenttypes.fields import GenericRelation
 
 class Vote(models.Model):
 
@@ -27,19 +28,20 @@ class Vote(models.Model):
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     vote_type = models.PositiveSmallIntegerField(null=True)
 
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
     # Relationship Fields
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE, related_name="votes",
     )
-    post = models.ForeignKey(
-        'forums.Post',
-        on_delete=models.CASCADE, related_name="votes",
-    )
+
+
 
     class Meta:
         ordering = ('-created',)
-        unique_together = ('post', 'owner')
+        unique_together = ('object_id', 'owner', 'content_type')
 
     def __unicode__(self):
         return u'%s' % self.pk
@@ -90,11 +92,11 @@ class Profile(models.Model):
             profile = Profile.objects.create(user=instance, avatar_hexcode=hex_number.upper())
             profile.save()
 
-    @receiver(post_save, sender=Vote)
-    def increase_comment_count(sender, instance, created, **kwargs):
-        if created:
-            instance.post.owner.profiles.prestige_points += 1
-            instance.post.owner.profiles.save()
+    # @receiver(post_save, sender=Comment)
+    # def increase_comment_count(sender, instance, created, **kwargs):
+    #     if created:
+    #         instance.post.owner.profiles.prestige_points += 1
+    #         instance.post.owner.profiles.save()
 
 
 class Comment(models.Model):
@@ -108,7 +110,7 @@ class Comment(models.Model):
     likes = models.PositiveIntegerField(default=0)
     dislikes = models.PositiveIntegerField(default=0)
     reply_count = models.PositiveIntegerField(default=0)
-
+    votes = GenericRelation(Vote, related_query_name='votes')
     # Relationship Fields
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -165,6 +167,7 @@ class Post(models.Model):
     dislikes = models.PositiveIntegerField(default=0)
     comment_count = models.PositiveIntegerField(default=0)
     body = models.TextField(max_length=5000)
+    votes = GenericRelation(Vote, related_query_name='votes')
 
     # Relationship Fields
     owner = models.ForeignKey(
@@ -204,22 +207,26 @@ class Post(models.Model):
         instance.post.comment_count -= 1
         instance.post.save()
 
-    @receiver(post_save, sender=Vote)
-    def increase_vote_count(sender, instance, created, **kwargs):
-        if created:
-            if instance.vote_type == 0:
-                instance.post.dislikes += 1
-            else:
-                instance.post.likes += 1
-            instance.post.save()
-
-    @receiver(post_delete, sender=Vote)
-    def reduce_vote_count(sender, instance, **kwargs):
-        if instance.vote_type == 0:
-            instance.post.dislikes -= 1
-        else:
-            instance.post.likes -= 1
-        instance.post.save()
+    # @receiver(post_save, sender=Vote)
+    # def increase_vote_count(sender, instance, created, **kwargs):
+    #     if created:
+    #         if instance.content_type.model == "post":
+    #             if instance.vote_type == 0:
+    #                 instance.content_object.likes -= 1
+    #                 instance.content_object.dislikes += 1
+    #             else:
+    #                 instance.content_object.dislikes -= 1
+    #                 instance.content_object.likes += 1
+    #             instance.content_object.save()
+    #
+    # @receiver(post_delete, sender=Vote)
+    # def reduce_vote_count(sender, instance, **kwargs):
+    #     if instance.content_type.model == "post":
+    #         if instance.vote_type == 0:
+    #             instance.content_object.dislikes -= 1
+    #         else:
+    #             instance.content_object.likes -= 1
+    #         instance.content_object.save()
 
 
 class ForumMember(models.Model):
@@ -333,5 +340,5 @@ class Notification(models.Model):
     def create_vote_notification(sender, instance,created, **kwargs):
         if created:
             tag = "voted"
-            notification = Notification.objects.create(tag=tag, affected_agent=instance.post.owner, content_object=instance)
+            notification = Notification.objects.create(tag=tag, affected_agent=instance.content_object.owner, content_object=instance)
             notification.save()

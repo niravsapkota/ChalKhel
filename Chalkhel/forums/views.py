@@ -2,7 +2,7 @@ from django.views.generic import DetailView, ListView, UpdateView, CreateView, D
 from .models import Profile, Post, Comment, Vote, Forum, ForumMember, Notification
 from django.contrib.auth.models import User
 from .forms import ProfileForm, PostForm, CommentForm, VoteForm, ForumForm, ForumMemberForm, UserRegisterForm
-
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -36,13 +36,13 @@ def get_notifications(request):
         notifications.unread = notifications.filter(is_read=0)
         return notifications
 
-def read_all_notifications(request):
+def read_all_notifications(request, **kwargs):
     if request.user.is_authenticated:
         notifications = Notification.objects.filter(affected_agent=request.user.id)
         for notification in notifications:
             notification.is_read = 1
             notification.save()
-        return notifications
+        return redirect('login')
 
 
 def register(request):
@@ -59,13 +59,14 @@ def register(request):
     return render(request, 'forums/auth/register.html', {'form': form})
 
 def add_voted_or_not(objects, user):
-    for object in objects:
-        object_number = 0
-        liked_object = [value for value in object.votes.all() if value in user.votes.all()]
-        if len(liked_object) != 0:
-            object.voted = True
-            object.vote_type = liked_object[object_number].vote_type
-            object_number = object_number + 1
+    if user.is_authenticated:
+        for object in objects:
+            object_number = 0
+            liked_object = [value for value in object.votes.all() if value in user.votes.all()]
+            if len(liked_object) != 0:
+                object.voted = True
+                object.vote_type = liked_object[object_number].vote_type
+                object_number = object_number + 1
     return objects
 
 
@@ -176,12 +177,27 @@ class PostDetailView(DetailView):
 
     def get(self, request, slug):
         post = self.model.objects.get(slug=slug)
-        liked_object = [value for value in post.votes.all() if value in request.user.votes.all()]
-        if len(liked_object) != 0:
+        # content_type = ContentType.objects.get_for_model(Post)
+        post_vote = post.votes.filter(owner = request.user.id)
+        if len(post_vote) != 0:
             post.voted = True
-            post.vote_type = liked_object[0].vote_type
-            post.vote_id = liked_object[0].id
-        return render(request, self.template_name, {'object': post})
+            post.vote_type = post_vote[0].vote_type
+            post.vote_id = post_vote[0].id
+
+        comments = post.comments.all()
+        content_type_comment = ContentType.objects.get_for_model(Comment)
+        comment_vote = Vote.objects.filter(owner=request.user.id, content_type__pk=content_type_comment.id)
+
+        if len(comment_vote) != 0:
+            for comment in comments:
+                object_number = 0
+                if comment_vote[object_number] in comment.votes.all():
+                    comment.voted = True
+                    comment.vote_type = comment_vote[object_number].vote_type
+                    comment.vote_id = comment_vote[object_number].id
+                    object_number = object_number + 1
+
+        return render(request, self.template_name, {'object': post, 'comments':comments})
 
 
 class PostUpdateView(UpdateView):
@@ -223,15 +239,27 @@ class VoteListView(ListView):
     # template_name = 'forums/comment/comment_form.html'
 
 
-class VoteCreateView(CreateView):
+class PostVoteCreateView(CreateView):
     model = Vote
     # form_class = VoteForm
-    fields = ['vote_type', 'post']
+    fields = ['vote_type', 'object_id']
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
+        form.instance.content_object = Post.objects.get(id=form.instance.object_id)
         super().form_valid(form)
-        return redirect('forums_post_detail', slug=form.instance.post.slug)
+        return redirect('forums_post_detail', slug=form.instance.content_object.slug)
+
+class CommentVoteCreateView(CreateView):
+    model = Vote
+    # form_class = VoteForm
+    fields = ['vote_type', 'object_id']
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        form.instance.content_object = Comment.objects.get(id=form.instance.object_id)
+        super().form_valid(form)
+        return redirect('forums_post_detail', slug=form.instance.content_object.post.slug)
 
 
 class VoteDetailView(DetailView):
@@ -244,16 +272,24 @@ class VoteUpdateView(UpdateView):
 
     def get_success_url(self):
     # Assuming there is a ForeignKey from Comment to Post in your model
-        post = self.object.post
-        return reverse_lazy( 'forums_post_detail', kwargs={'slug': post.slug})
+        if self.object.content_type.model == 'post':
+            post = self.object.content_object
+            return reverse_lazy( 'forums_post_detail', kwargs={'slug': post.slug})
+        else:
+            comment = self.object.content_object
+            return reverse_lazy( 'forums_post_detail', kwargs={'slug': comment.post.slug})
 
 class VoteDeleteView(DeleteView):
     model = Vote
 
     def get_success_url(self):
     # Assuming there is a ForeignKey from Comment to Post in your model
-        post = self.object.post
-        return reverse_lazy( 'forums_post_detail', kwargs={'slug': post.slug})
+        if self.object.content_type.model == 'post':
+            post = self.object.content_object
+            return reverse_lazy( 'forums_post_detail', kwargs={'slug': post.slug})
+        else:
+            comment = self.object.content_object
+            return reverse_lazy( 'forums_post_detail', kwargs={'slug': comment.post.slug})
 
 
 class ForumListView(ListView):

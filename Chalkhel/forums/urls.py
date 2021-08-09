@@ -76,11 +76,12 @@ urlpatterns += (
 urlpatterns += (
     # urls for Vote
     path('vote/', views.VoteListView.as_view(), name='forums_vote_list'),
-    path('vote/create/', views.VoteCreateView.as_view(), name='forums_vote_create'),
+    path('post/vote/create/', views.PostVoteCreateView.as_view(), name='forums_post_vote_create'),
     path('vote/detail/<int:pk>/', views.VoteDetailView.as_view(), name='forums_vote_detail'),
     path('vote/update/<int:pk>/', views.VoteUpdateView.as_view(), name='forums_vote_update'),
     path('vote/delete/<int:pk>/', views.VoteDeleteView.as_view(), name='forums_vote_delete'),
 
+    path('comment/vote/create/', views.CommentVoteCreateView.as_view(), name='forums_comment_vote_create'),
     #my-votes
     #like
     #dislike

@@ -60,6 +60,8 @@
 
     <ul class="nav border rounded mt-2">
 
+      {% if request.user.is_authenticated %}
+
       {% if object.voted == True %}
 
         {% if object.vote_type == True %}
@@ -105,22 +107,23 @@
 
       {% else %}
         <li class="nav-item">
-          <form action="{% url 'forums_vote_create' %}" method="post">
+          <form action="{% url 'forums_post_vote_create' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="vote_type" value="1">
-            <input type="hidden" name="post" value="{{ object.id }}">
+            <input type="hidden" name="object_id" value="{{ object.id }}">
             <button type="submit" class="nav-link active">Like</button>
           </form>
         </li>
 
         <li class="nav-item">
-          <form action="{% url 'forums_vote_create' %}" method="post">
+          <form action="{% url 'forums_post_vote_create' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="vote_type" value="0">
-            <input type="hidden" name="post" value="{{ object.id }}">
+            <input type="hidden" name="object_id" value="{{ object.id }}">
             <button type="submit" class="nav-link active">Dislike</button>
           </form>
         </li>
+      {% endif %}
       {% endif %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'my-profile-voted-posts' %}">Save</a>
@@ -142,8 +145,8 @@
     </div>
   </form>
 
-  {% for comment in object.comments.all %}
-    <div class="card-body">
+  {% for comment in comments %}
+    <div class="card-body text-start">
       <span class="form-text fw-light">
         <img class="rounded-circle border" width="20" height="20" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-social-logo.png">
           <a href="{{profile.get_absolute_url}}" class="fs-6">
@@ -153,12 +156,70 @@
       </span>
       <p class="card-text fs-6 my-2">{{ comment.body }}</p>
       <ul class="nav border rounded mt-2">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'my-profile' %}">Like</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'my-profile-comments' %}">Dislike</a>
-        </li>
+        {% if request.user.is_authenticated %}
+        {% if comment.voted == True %}
+
+          {% if comment.vote_type == True %}
+            <li class="nav-item">
+              <form action="{% url 'forums_vote_delete' pk=comment.vote_id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="vote_type" value="1">
+                <input type="hidden" name="post" value="{{ comment.id }}">
+                <button type="submit" class="nav-link active">Liked</button>
+              </form>
+            </li>
+
+            <li class="nav-item">
+              <form action="{% url 'forums_vote_update' pk=comment.vote_id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="vote_type" value="0">
+                <input type="hidden" name="post" value="{{ comment.id }}">
+                <button type="submit" class="nav-link active">Dislike</button>
+              </form>
+            </li>
+          {% endif %}
+
+          {% if comment.vote_type == False %}
+          <li class="nav-item">
+            <form action="{% url 'forums_vote_update' pk=comment.vote_id %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="vote_type" value="1">
+              <input type="hidden" name="post" value="{{ comment.id }}">
+              <button type="submit" class="nav-link active">Like</button>
+            </form>
+          </li>
+
+            <li class="nav-item">
+              <form action="{% url 'forums_vote_delete' pk=comment.vote_id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="vote_type" value="1">
+                <input type="hidden" name="post" value="{{ comment.id }}">
+                <button type="submit" class="nav-link active">Disliked</button>
+              </form>
+            </li>
+
+          {% endif %}
+
+        {% else %}
+          <li class="nav-item">
+            <form action="{% url 'forums_comment_vote_create' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="vote_type" value="1">
+              <input type="hidden" name="object_id" value="{{ comment.id }}">
+              <button type="submit" class="nav-link active">Like</button>
+            </form>
+          </li>
+
+          <li class="nav-item">
+            <form action="{% url 'forums_comment_vote_create' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="vote_type" value="0">
+              <input type="hidden" name="object_id" value="{{ comment.id }}">
+              <button type="submit" class="nav-link active">Dislike</button>
+            </form>
+          </li>
+        {% endif %}
+        {% endif %}
         {% if comment.owner.id == request.user.id %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'forums_comment_update' slug=comment.slug %}" tabindex="-1">Edit</a>
