@@ -67,6 +67,7 @@ urlpatterns += (
     # urls for Comment
     path('comment/', views.CommentListView.as_view(), name='forums_comment_list'),
     path('comment/create/', views.CommentCreateView.as_view(), name='forums_comment_create'),
+    path('reply/create/', views.ReplyCreateView.as_view(), name='forums_reply_create'),
     path('comment/detail/<slug:slug>/', views.CommentDetailView.as_view(), name='forums_comment_detail'),
     path('comment/update/<slug:slug>/', views.CommentUpdateView.as_view(), name='forums_comment_update'),
 
@@ -82,6 +83,8 @@ urlpatterns += (
     path('vote/delete/<int:pk>/', views.VoteDeleteView.as_view(), name='forums_vote_delete'),
 
     path('comment/vote/create/', views.CommentVoteCreateView.as_view(), name='forums_comment_vote_create'),
+    path('post/<slug:slug>/vote/create/', views.postvoteupdate, name='forums_post_vote_update'),
+    path('post/<slug:slug>/vote/delete/', views.postvotedelete, name='forums_post_vote_delete'),
     #my-votes
     #like
     #dislike
@@ -113,11 +116,13 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    # urls for ForumMember
-    # path('forummember/', views.ForumMemberListView.as_view(), name='forums_forummember_list'),
     path('notifications/read', views.read_all_notifications, name='forums_notifications_update'),
-    # path('forummember/delete/<int:pk>/', views.ForumMemberDeleteView.as_view(), name='forums_forummember_delete'),
+)
 
-    #follow-Forum
-    #unfollow-forum
+urlpatterns += (
+    path('search/', views.search_forum, name='search_forum'),
+)
+
+urlpatterns += (
+    path('feed/', views.feed, name='feed'),
 )

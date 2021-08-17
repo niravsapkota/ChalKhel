@@ -3,21 +3,33 @@
 {% block profileContent %}
 
   {% for comment in comments %}
-    <div class="card-body">
+    <div class="card-body bg-white rounded mb-2 border">
       <span class="form-text fw-light">
         <img class="rounded-circle border" width="20" height="20" src="{{comment.owner.profiles.profile_pic.url}}">
         <b>
           <a href="{{profile.get_absolute_url}}">
             {{comment.owner}}
           </a>
+        {%if comment.content_type.model == 'post'%}
         </b> - Commented on:
-        <a href="{{comment.post.get_absolute_url}}">
-          {{comment.post.name}}
+        <a href="{{comment.content_object.get_absolute_url}}">
+          {{comment.content_object.name}}
         </a>
         in forum
-        <a href="{{comment.post.forum.get_absolute_url}}">{{comment.post.forum.name}}</a>
+        <a href="{{comment.content_object.forum.get_absolute_url}}">{{comment.content_object.forum.name}}</a>
+        {%elif comment.content_type.model == 'comment'%}
+
+        </b> - Commented on:
+        <a href="{{comment.content_object.content_object.get_absolute_url}}">
+          {{comment.content_object.content_object.name}}
+        </a>
+        in forum
+        <a href="{{comment.content_object.get_absolute_url}}">{{comment.content_object.content_object.forum.name}}</a>
+        {%endif%}
       </span>
+      {% autoescape off %}
       <p class="card-text fs-6 my-2">{{ comment.body }}</p>
+      {% endautoescape %}
     </div>
   {% endfor %}
 

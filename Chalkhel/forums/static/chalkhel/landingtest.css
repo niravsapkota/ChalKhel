@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body{
+background: url('backgroundLanding.svg')no-repeat ;
+color: white;
+}
+
+#header{
+display: inline-block;
+margin:49px 0px 70px 150px;
+font-size: 24px;
+font-family: 'Montserrat', sans-serif;
+font-weight: bold;
+}
+
+section.top .block{
+width: 580px;
+margin-left: 150px;
+  margin-top: 100px;
+}
+
+
+#sub-heading{
+margin-bottom:10px ;
+font-size: 32px;
+font-family: 'Poppins', sans-serif;
+}
+
+section.top p{
+margin-top: 5px;
+font-size: 18px;
+font-family: 'Poppins', sans-serif;
+}
+
+#top{
+width: 440px;
+display: inline-block;
+position: absolute;
+margin-left: 817px;
+margin-top: -259px;
+}
+
+.registerbox{
+    width: 160px;
+    height: 63px;
+    position: absolute;
+    margin-left: 720px;
+    margin-top: -152px;
+}
+
+section.top .container{
+width: 398px;
+height: 52px;
+position: absolute;
+margin: 90px 0px 0px 549px;
+}
+
+.btn1{
+width: 150px;
+padding: 10px 10px;
+background-color: white;
+color: #0096c7;
+margin-right: 90px;
+border-radius: 60px;
+font-size: 24px;
+border: none;
+outline: none;
+cursor: pointer;
+  margin-top:20px;
+}
+
+.btn2{
+width: 150px;
+padding: 10px 10px;
+background-color: #0096c7;
+color: white ;
+border-radius: 60px;
+font-size: 24px;
+border: none;
+outline: none;
+cursor: pointer;
+  margin-top:20px;
+}
+
+button a{
+  text-decoration: none;
+  color: inherit;
+}
+
+section.mid{
+height: 285px;
+width: 100%;
+margin: 40vh auto 0px auto;
+display: flex;
+justify-content: space-evenly;
+}
+
+.box1{
+  background: url("cricket.png") no-repeat;
+  background-color: #15ACF6;
+  background-position:120px 120px;
+  background-size: 150%;
+border-radius: 60px;
+width: 290px;
+height: 290px;
+  text-align: center;
+  padding: 140px 0px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  font-size: 22px;
+
+}
+.box2{
+  background: url("basketball.png") no-repeat;
+  background-position:80px 80px;
+  background-color: #15ACF6;
+/* background-color: white; */
+border-radius: 60px;
+width: 290px;
+height: 290px;
+    text-align: center;
+  padding: 140px 0px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  font-size: 22px;
+}
+.box3{
+  background: url("football.png") no-repeat;
+  background-position:150px 150px;
+  background-size: 100%;
+  background-color: #15ACF6;
+/* background-color: #15ACF6; */
+border-radius: 60px;
+width: 290px;
+height: 290px;
+    text-align: center;
+  padding: 140px 0px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+section.bottom{
+height: 258px;
+margin-top: 20vh;
+}
+
+section.bottom .container1{
+height: 258px;
+margin-left: 150px;
+width: 900px;
+}
+
+section.bottom .container1 p{
+font-size: 17px;
+padding: 2px 4px;
+font-family: 'Poppins', sans-serif;
+}
+
+section.bottom img{
+width: 300px;
+position: absolute;
+margin-left: 1050px;
+margin-top: -181px;
+}
+
+#footer{
+margin-top: 50px;
+height: 30px;
+background-color: #EDFBFF;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Montserrat', sans-serif;
+color: black;
+}

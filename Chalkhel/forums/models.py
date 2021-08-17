@@ -20,6 +20,26 @@ from django.db.models.signals import post_save, post_delete
 import random
 from django.contrib.contenttypes.fields import GenericRelation
 
+class Notification(models.Model):
+    id = models.AutoField(primary_key=True)
+    is_read = models.PositiveSmallIntegerField(null=False, default=0)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    tag = models.CharField(max_length=255, default="", null=False, blank=True)
+
+    affected_agent = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE, related_name="affected_agent",
+    )
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    last_updated = models.DateTimeField(auto_now=True, editable=True)
+
+    def __unicode__(self):
+        return u'%s' % self.slug
+
 class Vote(models.Model):
 
     # Fields
@@ -37,7 +57,7 @@ class Vote(models.Model):
         on_delete=models.CASCADE, related_name="votes",
     )
 
-
+    notifications = GenericRelation(Notification, related_query_name='notifications')
 
     class Meta:
         ordering = ('-created',)
@@ -63,7 +83,7 @@ class Profile(models.Model):
     bio = models.TextField(max_length=300)
     prestige_points = models.PositiveIntegerField(default=0)
     avatar_hexcode = models.CharField(max_length=10)
-    profile_pic = models.ImageField(upload_to="post/image/", null=True, blank=True)
+    profile_pic = models.ImageField(upload_to="post/image/", default="Avatar.svg")
 
     # Relationship Fields
     user = models.OneToOneField(
@@ -83,14 +103,7 @@ class Profile(models.Model):
     def get_update_url(self):
         return reverse('forums_profile_update', args=(self.slug,))
 
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            random_number = random.randint(0, 16777215)
-            hex_number = str(hex(random_number))
-            hex_number = '#' + hex_number[2:]
-            profile = Profile.objects.create(user=instance, avatar_hexcode=hex_number.upper())
-            profile.save()
+
 
     # @receiver(post_save, sender=Comment)
     # def increase_comment_count(sender, instance, created, **kwargs):
@@ -111,16 +124,17 @@ class Comment(models.Model):
     dislikes = models.PositiveIntegerField(default=0)
     reply_count = models.PositiveIntegerField(default=0)
     votes = GenericRelation(Vote, related_query_name='votes')
+    # comment = GenericRelation('self', related_query_name='comment')
     # Relationship Fields
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE, related_name="comments",
+        on_delete=models.CASCADE,
     )
-    post = models.ForeignKey(
-        'forums.Post',
-        on_delete=models.CASCADE, related_name="comments",
-    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
 
+    notifications = GenericRelation(Notification, related_query_name='notifications')
     class Meta:
         ordering = ('-created',)
 
@@ -168,15 +182,15 @@ class Post(models.Model):
     comment_count = models.PositiveIntegerField(default=0)
     body = models.TextField(max_length=5000)
     votes = GenericRelation(Vote, related_query_name='votes')
-
+    comments = GenericRelation(Comment, related_query_name='comments')
     # Relationship Fields
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE, related_name="posts",
+        on_delete=models.CASCADE,
     )
     forum = models.ForeignKey(
         'forums.Forum',
-        on_delete=models.CASCADE, related_name="posts",
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -196,16 +210,17 @@ class Post(models.Model):
         if self.photo and hasattr(self.photo, 'url'):
             return self.photo.url
 
-    @receiver(post_save, sender=Comment)
-    def increase_comment_count(sender, instance, created, **kwargs):
-        if created:
-            instance.post.comment_count += 1
-            instance.post.save()
-
-    @receiver(post_delete, sender=Comment)
-    def reduce_comment_count(sender, instance, **kwargs):
-        instance.post.comment_count -= 1
-        instance.post.save()
+    # @receiver(post_save, sender=Comment)
+    # def increase_comment_count(sender, instance, created, **kwargs):
+    #     if created and instance.content_type.model == "post":
+    #         instance.content_object.comment_count += 1
+    #         instance.content_object.comment_count.save()
+    #
+    # @receiver(post_delete, sender=Comment)
+    # def reduce_comment_count(sender, instance, **kwargs):
+    #     if instance.content_type.model == "post":
+    #         instance.content_object.comment_count.comment_count -= 1
+    #         instance.content_object.comment_count.save()
 
     # @receiver(post_save, sender=Vote)
     # def increase_vote_count(sender, instance, created, **kwargs):
@@ -276,7 +291,7 @@ class Forum(models.Model):
     # Relationship Fields
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE, related_name="forums",
+        on_delete=models.CASCADE, related_name="owner",
     )
 
     class Meta:
@@ -284,6 +299,8 @@ class Forum(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.slug
+    def __str__(self):
+        return u'%s' % self.name
 
     def get_absolute_url(self):
         return reverse('forums_forum_detail', args=(self.slug,))
@@ -297,48 +314,99 @@ class Forum(models.Model):
             users.append(user.member)
         return users
 
-    @receiver(post_save, sender=ForumMember)
-    def increase_member_count(sender, instance, created, **kwargs):
-        if created:
-            instance.forum.member_count += 1
-            instance.forum.save()
 
-    @receiver(post_delete, sender=ForumMember)
-    def reduce_member_count(sender, instance, **kwargs):
-        instance.forum.member_count -= 1
+class ForumStatistic(models.Model):
+        id = models.AutoField(primary_key=True)
+        forum = models.ForeignKey(
+            'forums.Forum',
+            on_delete=models.CASCADE, related_name="forumS",
+        )
+        created = models.DateTimeField(auto_now_add=True, editable=False)
+        last_updated = models.DateTimeField(auto_now=True, editable=False)
+        posts_last_week = models.PositiveIntegerField(default=0)
+        followers_last_week = models.PositiveIntegerField(default=0)
+
+        posts_last_day = models.PositiveIntegerField(default=0)
+        followers_last_day = models.PositiveIntegerField(default=0)
+
+        class Meta:
+            ordering = ('-created',)
+
+class PostStatistic(models.Model):
+        id = models.AutoField(primary_key=True)
+        forum = models.ForeignKey(
+            'forums.Post',
+            on_delete=models.CASCADE, related_name="postS",
+        )
+        created = models.DateTimeField(auto_now_add=True, editable=False)
+        last_updated = models.DateTimeField(auto_now=True, editable=False)
+
+        votes_last_week = models.PositiveIntegerField(default=0)
+        comments_last_week = models.PositiveIntegerField(default=0)
+
+        votes_last_day = models.PositiveIntegerField(default=0)
+        comments_last_day = models.PositiveIntegerField(default=0)
+
+        class Meta:
+            ordering = ('-created',)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@receiver(post_save, sender=Vote)
+def create_vote_notification(sender, instance,created, **kwargs):
+    if created:
+        tag = "voted"
+        notification = Notification.objects.create(tag=tag, affected_agent=instance.content_object.owner, content_object=instance)
+        notification.save()
+
+@receiver(post_delete, sender=Vote)
+def delete_related_post_notification(sender, instance, using, **kwargs):
+    for notification in instance.notifications.all():
+        notification.delete()
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        random_number = random.randint(0, 16777215)
+        hex_number = str(hex(random_number))
+        hex_number = '#' + hex_number[2:]
+        profile = Profile.objects.create(user=instance, avatar_hexcode=hex_number.upper())
+        profile.save()
+
+@receiver(post_save, sender=Comment)
+def create_comment_notification(sender, instance,created, **kwargs):
+    if created:
+        tag = "commented on"
+        notification = Notification.objects.create(tag=tag, affected_agent=instance.content_object.owner, content_object=instance)
+        notification.save()
+
+@receiver(post_delete, sender=Comment)
+def delete_related_comment_notification(sender, instance, using, **kwargs):
+        for notification in instance.notifications.all():
+            notification.delete()
+
+@receiver(post_save, sender=ForumMember)
+def increase_member_count(sender, instance, created, **kwargs):
+    if created:
+        instance.forum.member_count += 1
         instance.forum.save()
 
-
-class Notification(models.Model):
-    id = models.AutoField(primary_key=True)
-    is_read = models.PositiveSmallIntegerField(null=False, default=0)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-
-    tag = models.CharField(max_length=255, default="", null=False, blank=True)
-
-    affected_agent = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE, related_name="affected_agent",
-    )
-
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    last_updated = models.DateTimeField(auto_now=True, editable=True)
-
-    def __unicode__(self):
-        return u'%s' % self.slug
-
-    @receiver(post_save, sender=Comment)
-    def create_comment_notification(sender, instance,created, **kwargs):
-        if created:
-            tag = "commented on"
-            notification = Notification.objects.create(tag=tag, affected_agent=instance.post.owner, content_object=instance)
-            notification.save()
-
-    @receiver(post_save, sender=Vote)
-    def create_vote_notification(sender, instance,created, **kwargs):
-        if created:
-            tag = "voted"
-            notification = Notification.objects.create(tag=tag, affected_agent=instance.content_object.owner, content_object=instance)
-            notification.save()
+@receiver(post_delete, sender=ForumMember)
+def reduce_member_count(sender, instance, **kwargs):
+    instance.forum.member_count -= 1
+    instance.forum.save()

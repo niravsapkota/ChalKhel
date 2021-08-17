@@ -5,11 +5,15 @@
     <div class="row bg-light">
         <div class="col-md-3 px-0 border rounded overflow-hidden bg-white">
             <div class="d-flex flex-column align-items-center text-center pb-5 position-relative">
-              <img class="img-fluid mb-5 pb-3" src="https://blog.getbootstrap.com/assets/img/2020/06/v5-new-logo.png">
-              <img style="top: 115px;" class="rounded-circle border position-absolute " width="100" height="100" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-social-logo.png">
+              <img class="img-fluid mb-5 pb-3" src="{% static '/chalkhel/cover.gif' %}">
+              <img style="top: 80px;" class="rounded-circle border position-absolute " width="100" height="100" src="{{request.user.profiles.profile_pic.url}}">
               <!-- <img style="top: 115px;" class="rounded-circle border position-absolute " width="100" height="100" src="{{ profile.profile_pic }}"> -->
               <span class="font-weight-bold">{{profile.user}}</span>
-
+              <span>
+                <b>
+                  {{request.user}}
+                </b>
+              </span>
             </div>
         </div>
         <div class="col-md-8 border-right">
@@ -31,7 +35,13 @@
 <div class="card bg-white">
   <div class="card-body">
     <span class="form-text fw-light">
-      <img class="rounded-circle border" width="20" height="20" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-social-logo.png">
+      {%if 'Avatar.svg' in object.owner.profiles.profile_pic.url%}
+      <!-- <img class="rounded-circle border" width="20" height="20" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-social-logo.png"> -->
+      <!-- <img class="rounded-circle border" width="20" height="20" src="{{object.owner.profiles.profile_pic.url}}"> -->
+        {% include "avatar.html" with width=20 height=20%}
+      {% else %}
+      <img class="rounded-circle border" width="20" height="20" src="{{object.owner.profiles.profile_pic.url}}">
+      {% endif %}
       <b>
         <a href="{{post.owner.profiles.get_absolute_url}}">
           {{object.owner}}
@@ -40,7 +50,9 @@
     </span>
     <h5 class="card-title pb-2">{{ object.name }}</h5>
     <p class="card-text">
-      {{ object.body }}
+      {% autoescape off %}
+        {{ object.body }}
+      {% endautoescape %}
     </p>
 
     {% if object.media_content%}
@@ -58,88 +70,92 @@
     {% endif %}
     {% endif %}
 
-    <ul class="nav border rounded mt-2">
-
+    <div class="ps-3 d-flex d-grid gap-4 pt-3">
+      <div class="py-1 text-primary">
+        {{object.votes.count}}
+      </div>
       {% if request.user.is_authenticated %}
 
       {% if object.voted == True %}
 
-        {% if object.vote_type == True %}
-          <li class="nav-item">
+        {% if object.vote_type == 1 %}
             <form action="{% url 'forums_vote_delete' pk=object.vote_id %}" method="post">
               {% csrf_token %}
               <input type="hidden" name="vote_type" value="1">
               <input type="hidden" name="post" value="{{ object.id }}">
-              <button type="submit" class="nav-link active">Liked</button>
+              <button type="submit" class="bg-transparent border-0">
+                <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-up-circle-fill"></i>
+              </button>
             </form>
-          </li>
 
-          <li class="nav-item">
             <form action="{% url 'forums_vote_update' pk=object.vote_id %}" method="post">
               {% csrf_token %}
               <input type="hidden" name="vote_type" value="0">
               <input type="hidden" name="post" value="{{ object.id }}">
-              <button type="submit" class="nav-link active">Dislike</button>
+              <button type="submit" class="bg-transparent border-0">
+                <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-down-circle"></i>
+              </button>
             </form>
-          </li>
         {% endif %}
 
-        {% if object.vote_type == False %}
-        <li class="nav-item">
+        {% if object.vote_type == 0 %}
           <form action="{% url 'forums_vote_update' pk=object.vote_id %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="vote_type" value="1">
             <input type="hidden" name="post" value="{{ object.id }}">
-            <button type="submit" class="nav-link active">Like</button>
+            <button type="submit" class="bg-transparent border-0">
+              <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-up-circle"></i>
+            </button>
           </form>
-        </li>
 
-          <li class="nav-item">
             <form action="{% url 'forums_vote_delete' pk=object.vote_id %}" method="post">
               {% csrf_token %}
               <input type="hidden" name="vote_type" value="1">
               <input type="hidden" name="post" value="{{ object.id }}">
-              <button type="submit" class="nav-link active">Disliked</button>
+              <button type="submit" class="bg-transparent border-0">
+                <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-down-circle-fill"></i>
+              </button>
             </form>
-          </li>
 
         {% endif %}
 
       {% else %}
-        <li class="nav-item">
           <form action="{% url 'forums_post_vote_create' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="vote_type" value="1">
             <input type="hidden" name="object_id" value="{{ object.id }}">
-            <button type="submit" class="nav-link active">Like</button>
+            <button type="submit" class="bg-transparent border-0">
+              <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-up-circle"></i>
+            </button>
           </form>
-        </li>
 
-        <li class="nav-item">
           <form action="{% url 'forums_post_vote_create' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="vote_type" value="0">
             <input type="hidden" name="object_id" value="{{ object.id }}">
-            <button type="submit" class="nav-link active">Dislike</button>
+            <button type="submit" class="bg-transparent border-0">
+              <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-down-circle"></i>
+            </button>
           </form>
-        </li>
       {% endif %}
       {% endif %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'my-profile-voted-posts' %}">Save</a>
-      </li>
+
+        <a class="" href="{% url 'my-profile-voted-posts' %}">
+          <i style="font-size: 1.3rem;" class="bi bi-three-dots"></i>
+        </a>
+
       {% if object.owner.id == request.user.id %}
-      <li class="nav-item">
-      <a class="nav-link" href="{% url 'forums_post_update' slug=object.slug %}" tabindex="-1">Edit</a>
-    </li>
+
+      <a class="" href="{% url 'forums_post_update' slug=object.slug %}" tabindex="-1">Edit</a>
+
       {% endif %}
-  </ul>
+  </div>
 
   <div class="mt-2" style="width:100%;"></div>
-  <form action="{% url 'forums_comment_create' %}" method="post">
+  <form class="text-start" action="{% url 'forums_comment_create' %}" method="post">
     {% csrf_token %}
-    <input type="hidden" name="post" value="{{object.id}}">
-    <textarea id="summernote" name="body" style="width:100%;"></textarea>
+    <input type="hidden" name="object_id" value="{{object.id}}">
+    <textarea class="summernote" name="body" style="width:100%;"></textarea>
     <div class="d-grid gap-2">
       <button class="btn btn-primary my-1" type="submit">Submit</button>
     </div>
@@ -154,78 +170,126 @@
           </a>
             - commented on: {{ comment.created }}
       </span>
-      <p class="card-text fs-6 my-2">{{ comment.body }}</p>
-      <ul class="nav border rounded mt-2">
+      {% autoescape off %}
+        <p class="card-text fs-6 my-2">{{ comment.body|safe }}</p>
+      {% endautoescape %}
+      <div class="ps-3 d-flex d-grid gap-4 pt-1">
         {% if request.user.is_authenticated %}
+
         {% if comment.voted == True %}
 
-          {% if comment.vote_type == True %}
-            <li class="nav-item">
+          {% if comment.vote_type == 1 %}
+
               <form action="{% url 'forums_vote_delete' pk=comment.vote_id %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="vote_type" value="1">
                 <input type="hidden" name="post" value="{{ comment.id }}">
-                <button type="submit" class="nav-link active">Liked</button>
+                <button type="submit" class="bg-transparent border-0">
+                  <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-up-circle-fill"></i>
+                </button>
               </form>
-            </li>
 
-            <li class="nav-item">
+
+
               <form action="{% url 'forums_vote_update' pk=comment.vote_id %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="vote_type" value="0">
                 <input type="hidden" name="post" value="{{ comment.id }}">
-                <button type="submit" class="nav-link active">Dislike</button>
+                <button type="submit" class="bg-transparent border-0">
+                  <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-down-circle"></i>
+                </button>
               </form>
-            </li>
+
           {% endif %}
 
-          {% if comment.vote_type == False %}
-          <li class="nav-item">
+          {% if comment.vote_type == 0 %}
             <form action="{% url 'forums_vote_update' pk=comment.vote_id %}" method="post">
               {% csrf_token %}
               <input type="hidden" name="vote_type" value="1">
               <input type="hidden" name="post" value="{{ comment.id }}">
-              <button type="submit" class="nav-link active">Like</button>
+              <button type="submit" class="bg-transparent border-0">
+                <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-up-circle"></i>
+              </button>
             </form>
-          </li>
 
-            <li class="nav-item">
+
+
               <form action="{% url 'forums_vote_delete' pk=comment.vote_id %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="vote_type" value="1">
                 <input type="hidden" name="post" value="{{ comment.id }}">
-                <button type="submit" class="nav-link active">Disliked</button>
+                <button type="submit" class="bg-transparent border-0">
+                  <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-down-circle-fill"></i>
+                </button>
               </form>
-            </li>
+
 
           {% endif %}
 
         {% else %}
-          <li class="nav-item">
+
             <form action="{% url 'forums_comment_vote_create' %}" method="post">
               {% csrf_token %}
               <input type="hidden" name="vote_type" value="1">
               <input type="hidden" name="object_id" value="{{ comment.id }}">
-              <button type="submit" class="nav-link active">Like</button>
+              <button type="submit" class="bg-transparent border-0">
+                <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-up-circle"></i>
+              </button>
             </form>
-          </li>
 
-          <li class="nav-item">
+
+
             <form action="{% url 'forums_comment_vote_create' %}" method="post">
               {% csrf_token %}
               <input type="hidden" name="vote_type" value="0">
               <input type="hidden" name="object_id" value="{{ comment.id }}">
-              <button type="submit" class="nav-link active">Dislike</button>
+              <button type="submit" class="bg-transparent border-0">
+                <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-arrow-down-circle"></i>
+              </button>
             </form>
-          </li>
+
         {% endif %}
         {% endif %}
+        {%if request.user.is_authenticated %}
+            <a class="" data-bs-toggle="collapse" href="#collapseExample{{comment.id}}" role="button" aria-expanded="false" aria-controls="collapseExample" tabindex="-1">
+                <i style="font-size: 1.3rem;" class="text-primary bi-2x bi-chat-left"></i>
+            </a>
+        {%endif%}
         {% if comment.owner.id == request.user.id %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'forums_comment_update' slug=comment.slug %}" tabindex="-1">Edit</a>
-        </li>
+          <a class="" href="{% url 'forums_comment_update' slug=comment.slug %}" tabindex="-1">
+            <i style="font-size: 1.3rem;" class="bi bi-three-dots"></i>
+          </a>
         {% endif %}
-    </ul>
+    </div>
+    <div class="collapse" id="collapseExample{{comment.id}}">
+      <form class="text-start" action="{% url 'forums_reply_create' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="object_id" value="{{comment.id}}">
+        <textarea class="summernote" name="body" style="width:100%;"></textarea>
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary my-1" type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+    <div class="border-start border-3 ms-4">
+
+    {% for reply in comment.replies.all %}
+    <div class="card-body text-start">
+      <span class="form-text fw-light">
+        <img class="rounded-circle border" width="20" height="20" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-social-logo.png">
+          <a href="{{profile.get_absolute_url}}" class="fs-6">
+            {{reply.owner}}
+          </a>
+            - commented on: {{ reply.created }}
+      </span>
+        <p class="card-text fs-6 my-2">
+          {% autoescape off %}
+            {{ reply.body }}
+          {% endautoescape %}
+        </p>
+    </div>
+    {% endfor %}
+  </div>
     </div>
   {% endfor %}
   </div>
@@ -237,7 +301,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#summernote').summernote({
+        $('.summernote').summernote({
           placeholder: 'write your comment here...',
           toolbar: [
             // [groupName, [list of button]]
@@ -249,6 +313,10 @@
             ['insert', ['link']],
           ]
         });
+    });
+
+    jQuery('a').click( function(e) {
+      jQuery('.collapse').collapse('hide');
     });
   </script>
 {% endblock %}

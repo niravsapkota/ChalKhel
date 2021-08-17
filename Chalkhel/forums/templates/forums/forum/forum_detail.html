@@ -13,20 +13,22 @@
               <img style="top: 115px;" class="rounded-circle border position-absolute " width="100" height="100" src="{{forum.profile_pic.url}}">
               <!-- <img style="top: 115px;" class="rounded-circle border position-absolute " width="100" height="100" src="{{ profile.profile_pic }}"> -->
               <span class="font-weight-bold">{{forum.name}}</span>
-              <span class="font-weight-bold">members: {{forum.member_count}}</span>
+              <span class="" style="font-size: 10px;">{{forum.member_count}} members</span>
 
+                {% if request.user.is_authenticated %}
                 {% if forum.followed == True %}
                   <form action="{% url 'forums_forummember_delete' pk=forum.member %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="forum" value="{{ forum.id }}">
-                    <button type="submit" class="nav-link active">Unfollow</button>
+                    <button type="submit" class="btn btn-primary my-2">Unfollow</button>
                   </form>
                 {% else %}
                   <form action="{% url 'forums_forummember_create' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="forum" value="{{ forum.id }}">
-                    <button type="submit" class="nav-link active">Follow</button>
+                    <button type="submit" class="btn btn-primary my-2">Follow</button>
                   </form>
+                {% endif %}
                 {% endif %}
 
                 <button type="button" class="btn btn-primary my-2">
@@ -37,16 +39,8 @@
             </div>
         </div>
         <div class="col-md-8 border-right">
-          <ul class="nav border rounded">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{{profile.get_absolute_url}}">Posts</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="">Comments</a>
-            </li>
-        </ul>
 
-<div class="card my-3 bg-white">
+<div class="card bg-white">
   <div class="card-body">
     <!-- <h5 class="card-title"></h5> -->
     <p class="card-text">
@@ -59,7 +53,7 @@
 </div>
   </div>
 </div>
-  <div class="p-3 py-5 border rounded bg-white">
+  <div class="py-3">
     <div class="justify-content-between align-items-center mb-3">
       {% block forumContent %}
       {% endblock %}

@@ -8,7 +8,8 @@ from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-
+import datetime
+from django.db.models import Count
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from knox.models import AuthToken
@@ -19,7 +20,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.safestring import mark_safe
 from django.urls import reverse_lazy
 from django.core.files.storage import FileSystemStorage
-
+from collections import Counter, OrderedDict
+from django.db.models import Case, When
 # class MyView(LoginRequiredMixin, View):
 #     login_url = '/login/'
 #     redirect_field_name = 'redirect_to'
@@ -69,7 +71,63 @@ def add_voted_or_not(objects, user):
                 object_number = object_number + 1
     return objects
 
+def trending_forums():
+    week_ago = datetime.date.today() - datetime.timedelta(days = 7)
+    forum = ForumMember.objects.filter(created__gte = week_ago).values_list('forum', flat=True)
+    result = [item for items, c in Counter(list(forum)).most_common()
+                                       for item in [items] * c]
+    removed_duplicates = list(dict.fromkeys(result))
+    # print( result )
+    # print( removed_duplicates )
 
+    order = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(removed_duplicates)])
+    # print(order)
+    forums =  Forum.objects.filter(pk__in = removed_duplicates).order_by(order).annotate(list_order = order).annotate(num_posts=Count('post')) \
+                .order_by('-num_posts', '-list_order')
+    return forums[: 4]
+
+def trending_posts():
+    week_ago = datetime.date.today() - datetime.timedelta(days = 7)
+    posts = Post.objects.filter(created__gte = week_ago).annotate(num_comments=Count('comments')).annotate(num_votes=Count('votes')) \
+                .order_by('-num_comments', '-num_votes')
+    return posts[: 4]
+
+
+def search_forum(request):
+    forums = Forum.objects.filter(name__icontains=request.GET.get('q'))
+
+    if request.user.is_authenticated:
+        followed = forums.filter(pk__in= request.user.forummembers.values_list('forum', flat=True)).values_list('id', flat=True)
+        forummembers = request.user.forummembers.values_list('id', flat=True)
+
+        for forum in forums:
+            object_number = 0
+            followed_forum = [value for value in forum.forummembers.all() if value in request.user.forummembers.all()]
+            if len(followed_forum) != 0:
+                # forum.followed = True
+                forum.forumfollow = followed_forum[object_number].id
+                object_number = object_number + 1
+        return render(request, 'forums/forum/forum_list.html', {'object_list':forums, 'followed_id':followed, 'forummembers':forummembers})
+
+    return render(request, 'forums/forum/forum_list.html', {'object_list':forums})
+
+
+def feed(request):
+    if request.user.is_authenticated:
+        followed = Forum.objects.filter(pk__in= request.user.forummembers.values_list('forum', flat=True)).values_list('id', flat=True)
+        posts = Post.objects.filter(forum__in=followed).order_by('-created')
+        detailed_posts = add_voted_or_not(posts, request.user)
+
+        followed = ForumMember.objects.filter(member = request.user).values_list('forum', flat = True);
+        followed = Forum.objects.filter(pk__in = followed)
+
+        return render(request, 'forums/profile/comps/feed.html',
+                      {'posts': detailed_posts, 'notifications':get_notifications(request),
+                       'trending_posts':trending_posts(), 'trending_forums':trending_forums(),
+                       'followed':followed,
+                        })
+
+    # pass
 class MyProfile(LoginRequiredMixin, DetailView):
     # login_url = '/login'
     # redirect_field_name = '/login'
@@ -80,36 +138,40 @@ class MyProfile(LoginRequiredMixin, DetailView):
         posts = Post.objects.filter(owner=request.user)
         detailed_posts = add_voted_or_not(posts, request.user)
         return render(request, 'forums/profile/comps/posts.html',
-                      {'profile': profile, 'posts': detailed_posts, 'notifications':get_notifications(request)})
+                      {'profile': profile,'trending_posts':trending_posts(), 'trending_forums':trending_forums(), 'posts': detailed_posts, 'notifications':get_notifications(request), 'notifications':get_notifications(request), 'notifications':get_notifications(request)})
 
     @login_required
     def comments(request):
         profile = request.user.profiles
         comments = Comment.objects.filter(owner=request.user)
         return render(request, 'forums/profile/comps/comments.html',
-                      {'profile': profile, 'comments': comments})
+                      {'profile': profile,'trending_posts':trending_posts(), 'trending_forums':trending_forums(), 'comments': comments, 'notifications':get_notifications(request)})
     @login_required
     def voted_posts(request):
         profile = request.user.profiles
         voted_posts = []
-        votes = request.user.votes.all()
+
+        content_type = ContentType.objects.get_for_model(Post)
+        votes = Vote.objects.filter(owner=request.user.id, content_type__pk=content_type.id)
+
+        # votes = request.user.votes.all()
         for vote in votes:
-            voted_posts.append(vote.post)
+            voted_posts.append(vote.content_object)
         return render(request, 'forums/profile/comps/posts.html',
-                      {'profile': profile, 'posts': voted_posts})
+                      {'profile': profile,'trending_posts':trending_posts(), 'trending_forums':trending_forums(), 'posts': voted_posts, 'notifications':get_notifications(request)})
     @login_required
     def hidden_posts(request):
         profile = request.user.profiles
         hidden_posts = Post.objects.filter(owner=request.user, hidden=True)
         return render(request, 'forums/profile/comps/posts.html',
-                      {'profile': profile, 'posts': hidden_posts})
+                      {'profile': profile,'trending_posts':trending_posts(), 'trending_forums':trending_forums(), 'posts': hidden_posts, 'notifications':get_notifications(request)})
 
     @login_required
     def settings(request):
         profile = request.user.profiles
         hidden_posts = Post.objects.filter(owner=request.user, hidden=True)
         return render(request, 'forums/profile/comps/posts.html',
-                      {'profile': profile, 'posts': hidden_posts})
+                      {'profile': profile,'trending_posts':trending_posts(), 'trending_forums':trending_forums(), 'posts': hidden_posts, 'notifications':get_notifications(request)})
 
 
 class ProfileListView(ListView):
@@ -132,7 +194,7 @@ class ProfileDetailView(DetailView):
         profile = Profile.objects.get(slug=slug)
         comments = Comment.objects.filter(owner=profile.user)
         return render(request, 'forums/profile/comps/comments.html',
-                      {'profile': profile, 'comments': comments})
+                      {'profile': profile, 'comments': comments, 'notifications':get_notifications(request)})
 
 
 class ProfileUpdateView(UpdateView):
@@ -160,14 +222,15 @@ class PostCreateView(CreateView):
     #     return render(request, self.template_name, {'fields':self.fields})
 
     def form_valid(self, form):
-        file = self.request.FILES['media_content'].name
         form.instance.owner = self.request.user
-        if file.endswith('.png') or file.endswith('.jpeg') or file.endswith('.gif') or file.endswith('.jpg'):
-            form.instance.media_content_type = 0
-        elif file.endswith('.mov') or file.endswith('.qt') or file.endswith('.mp4'):
-            form.instance.media_content_type = 1
-        else:
-            return super().form_invalid(form)
+        if self.request.FILES:
+            file = self.request.FILES['media_content'].name
+            if file.endswith('.png') or file.endswith('.jpeg') or file.endswith('.gif') or file.endswith('.jpg'):
+                form.instance.media_content_type = 0
+            elif file.endswith('.mov') or file.endswith('.qt') or file.endswith('.mp4'):
+                form.instance.media_content_type = 1
+            else:
+                return super().form_invalid(form)
 
         return super().form_valid(form)
 
@@ -185,19 +248,28 @@ class PostDetailView(DetailView):
             post.vote_id = post_vote[0].id
 
         comments = post.comments.all()
+
         content_type_comment = ContentType.objects.get_for_model(Comment)
         comment_vote = Vote.objects.filter(owner=request.user.id, content_type__pk=content_type_comment.id)
 
         if len(comment_vote) != 0:
+            object_number = 0
             for comment in comments:
-                object_number = 0
                 if comment_vote[object_number] in comment.votes.all():
                     comment.voted = True
                     comment.vote_type = comment_vote[object_number].vote_type
                     comment.vote_id = comment_vote[object_number].id
                     object_number = object_number + 1
 
-        return render(request, self.template_name, {'object': post, 'comments':comments})
+        # content_type = ContentType.objects.get_for_model(Post)
+        # comments = Comment.objects.filter(content_type__pk=content_type.id)
+
+        for comment in comments:
+            content_type = ContentType.objects.get_for_model(Comment)
+            children = Comment.objects.filter(content_type__pk=content_type.id, object_id=comment.id)
+            comment.replies = children
+
+        return render(request, self.template_name, {'object': post, 'comments':comments, 'notifications':get_notifications(request)})
 
 
 class PostUpdateView(UpdateView):
@@ -215,12 +287,31 @@ class CommentCreateView(CreateView):
     model = Comment
     # form_class = CommentForm
     template_name = 'forums/comment/comment_form.html'
-    fields = ['body','post']
+    fields = ['body', 'object_id']
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
+        form.instance.content_object = Post.objects.get(id=form.instance.object_id)
         super().form_valid(form)
-        return redirect('forums_post_detail', slug=form.instance.post.slug)
+        return redirect('forums_post_detail', slug=form.instance.content_object.slug)
+
+class ReplyCreateView(CreateView):
+    model = Comment
+    # form_class = CommentForm
+    template_name = 'forums/comment/comment_form.html'
+    fields = ['body', 'object_id']
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        form.instance.content_object = Comment.objects.get(id=form.instance.object_id)
+
+        while True:
+            instance = form.instance.content_object
+            if instance.content_type.model == 'post':
+                instance = instance.content_object
+                break
+        super().form_valid(form)
+        return redirect('forums_post_detail', slug=instance.slug)
 
 
 class CommentDetailView(DetailView):
@@ -230,8 +321,9 @@ class CommentDetailView(DetailView):
 
 class CommentUpdateView(UpdateView):
     model = Comment
-    form_class = CommentForm
     template_name = 'forums/comment/comment_form.html'
+    fields = ['body']
+    # form_class = CommentForm
 
 
 class VoteListView(ListView):
@@ -242,24 +334,64 @@ class VoteListView(ListView):
 class PostVoteCreateView(CreateView):
     model = Vote
     # form_class = VoteForm
+    # template_name = 'forums/vote/vote_form.html'
     fields = ['vote_type', 'object_id']
-
+    # @login_required
     def form_valid(self, form):
         form.instance.owner = self.request.user
         form.instance.content_object = Post.objects.get(id=form.instance.object_id)
         super().form_valid(form)
         return redirect('forums_post_detail', slug=form.instance.content_object.slug)
 
+
+@login_required
+def postvoteupdate(request, slug):
+    if request.method == 'POST':
+
+        post = Post.objects.get(slug = slug)
+        content_type = ContentType.objects.get_for_model(Post)
+        post_vote = Vote.objects.filter(owner=request.user.id, content_type__pk=content_type.id)
+
+        vote = [value for value in post_vote.all() if value in post.votes.all()]
+
+        vote_form = VoteForm(request.POST, instance=vote[0])
+        if vote_form.is_valid():
+            vote_form.save()
+            print(vote_form.instance.vote_type)
+            messages.success(request, f'Your account has been updated!')
+            return redirect('forums_post_detail', slug=post.slug)
+
+@login_required
+def postvotedelete(request, slug):
+    if request.method == 'POST':
+
+        post = Post.objects.get(slug = slug)
+        content_type = ContentType.objects.get_for_model(Post)
+        post_vote = Vote.objects.filter(owner=request.user.id, content_type__pk=content_type.id)
+
+        vote = [value for value in post_vote.all() if value in post.votes.all()][0].delete()
+
+        return redirect('forums_post_detail', slug=post.slug)
+
+
 class CommentVoteCreateView(CreateView):
     model = Vote
     # form_class = VoteForm
     fields = ['vote_type', 'object_id']
-
+    # @login_required
     def form_valid(self, form):
         form.instance.owner = self.request.user
         form.instance.content_object = Comment.objects.get(id=form.instance.object_id)
+
+        while True:
+            instance = form.instance.content_object
+            if instance.content_type.model == 'post':
+                instance = instance.content_object
+                break
+        # print(form.instance.content_object.content_object.model)
         super().form_valid(form)
-        return redirect('forums_post_detail', slug=form.instance.content_object.post.slug)
+        return redirect('forums_post_detail', slug=instance.slug)
+        # return redirect('my-profile')
 
 
 class VoteDetailView(DetailView):
@@ -277,7 +409,7 @@ class VoteUpdateView(UpdateView):
             return reverse_lazy( 'forums_post_detail', kwargs={'slug': post.slug})
         else:
             comment = self.object.content_object
-            return reverse_lazy( 'forums_post_detail', kwargs={'slug': comment.post.slug})
+            return reverse_lazy( 'forums_post_detail', kwargs={'slug': comment.content_object.slug})
 
 class VoteDeleteView(DeleteView):
     model = Vote
@@ -289,7 +421,7 @@ class VoteDeleteView(DeleteView):
             return reverse_lazy( 'forums_post_detail', kwargs={'slug': post.slug})
         else:
             comment = self.object.content_object
-            return reverse_lazy( 'forums_post_detail', kwargs={'slug': comment.post.slug})
+            return reverse_lazy( 'forums_post_detail', kwargs={'slug': comment.content_object.slug})
 
 
 class ForumListView(ListView):
@@ -316,16 +448,19 @@ class ForumDetailView(DetailView):
     def get(self, request, slug):
         forum = Forum.objects.get(slug=slug)
         posts = Post.objects.filter(forum=forum)
-        print(request.user.is_authenticated)
-        if request.user.is_authenticated and len(forum.forummembers.filter(member = request.user.id)) != 0:
-            forum.member = forum.forummembers.get(member = request.user.id).id
-            print(forum.member)
-        # comments = Comment.objects.filter(owner=request.user)
-        common_users = [value for value in forum.forummembers.all() if value in request.user.forummembers.all()]
-        if len(common_users) != 0:
-            forum.followed = True
-        return render(request, self.template_name, {'forum': forum, 'posts': posts})
+        # print(request.user.is_authenticated)
+        if request.user.is_authenticated:
+            if request.user.is_authenticated and len(forum.forummembers.filter(member = request.user.id)) != 0:
+                forum.member = forum.forummembers.get(member = request.user.id).id
 
+            # comments = Comment.objects.filter(owner=request.user)
+            common_users = [value for value in forum.forummembers.all() if value in request.user.forummembers.all()]
+            if len(common_users) != 0:
+                forum.followed = True
+            detailed_posts = add_voted_or_not(posts, request.user)
+            return render(request, self.template_name, {'forum': forum, 'posts': detailed_posts, 'notifications':get_notifications(request)})
+
+        return render(request, self.template_name, {'forum': forum, 'posts': posts, 'notifications':get_notifications(request)})
 
 class ForumUpdateView(UpdateView):
     model = Forum

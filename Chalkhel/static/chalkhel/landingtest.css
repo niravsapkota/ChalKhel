@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background: url('backgroundLanding.svg')no-repeat ;
+  color: white;
+}
+
+#header{
+  display: inline-block;
+  margin:49px 0px 70px 150px;
+  font-size: 38px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+}
+
+section.top .block{
+  width: 580px;
+  margin-left: 150px;
+}
+
+
+#sub-heading{
+  margin-bottom:10px ;
+  font-size: 50px;
+  font-family: 'Poppins', sans-serif;
+}
+
+section.top p{
+  margin-top: 5px;
+  font-size: 22px;
+  font-family: 'Poppins', sans-serif;
+}
+
+#top{
+  width: 440px;
+  display: inline-block;
+  position: absolute;
+  margin-left: 817px;
+  margin-top: -259px;
+}
+
+.registerbox{
+  width: 160px;
+  height: 63px;
+  position: absolute;
+  margin-left: 720px;
+  margin-top: -152px;
+}
+
+section.top .container{
+  width: 398px;
+  height: 52px;
+  position: absolute;
+  margin: 90px 0px 0px 549px;
+}
+
+.btn1{
+  width: 150px;
+  padding: 10px 10px;
+  background-color: white;
+  color: #0096c7;
+  margin-right: 90px;
+  border-radius: 60px;
+  font-size: 24px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.btn2{
+  width: 150px;
+  padding: 10px 10px;
+  background-color: #0096c7;
+  color: white ;
+  border-radius: 60px;
+  font-size: 24px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+section.mid{
+  height: 285px;
+  width: 100%;
+  position: absolute;
+  margin: 120vh auto 0px auto;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.box1{
+  background-color: #15ACF6;
+  border-radius: 75px;
+  width: 280px;
+  height: 280px;
+}
+.box2{
+  background-color: white;
+  border-radius: 75px;
+  width: 280px;
+  height: 280px;
+}
+.box3{
+  background-color: #15ACF6;
+  border-radius: 75px;
+  width: 280px;
+  height: 280px;
+}
+
+section.bottom{
+  height: 258px;
+  margin-top: 500px;
+}
+
+section.bottom .container1{
+  height: 258px;
+  margin-left: 150px;
+  width: 900px;
+}
+
+section.bottom .container1 p{
+  font-size: 17px;
+  padding: 2px 4px;
+  font-family: 'Poppins', sans-serif;
+}
+
+section.bottom img{
+  width: 300px;
+  position: absolute;
+  margin-left: 1050px;
+  margin-top: -181px;
+}
+
+#footer{
+  margin-top: 50px;
+  height: 45px;
+  background-color: #EDFBFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  color: black;
+}

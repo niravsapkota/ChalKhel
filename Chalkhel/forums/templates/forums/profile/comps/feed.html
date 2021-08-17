@@ -1,20 +1,13 @@
-{% extends "forums/profile/profile_detail.html" %}
+{% extends "forums/profile/profile_feed_template.html" %}
 
 {% block profileContent %}
 
 {% for post in posts %}
 
-  <div class="card bg-transparent border-0 mb-3">
-    <div class="card-body border bg-white my-2 py-3 px-4 rounded">
+  <div class="card border mb-3">
+    <div class="card-body py-3 px-4">
       <span class="form-text fw-light">
-        {%if 'Avatar.svg' in post.owner.profiles.profile_pic.url%}
-        <!-- <img class="rounded-circle border" width="20" height="20" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-social-logo.png"> -->
-        <!-- <img class="rounded-circle border" width="20" height="20" src="{{object.owner.profiles.profile_pic.url}}"> -->
-          {% include "avatar.html" with width=20 height=20%}
-        {% else %}
-        <!-- <img class="rounded-circle border" width="20" height="20" src="{{object.owner.profiles.profile_pic.url}}"> -->
         <img class="rounded-circle border" width="20" height="20" src="{{post.owner.profiles.profile_pic.url}}">
-        {% endif %}
         <b>
           <a href="{{post.owner.profiles.get_absolute_url}}">
             {{post.owner}}

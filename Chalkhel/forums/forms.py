@@ -37,7 +37,7 @@ class CommentForm(forms.ModelForm):
 class VoteForm(forms.ModelForm):
     class Meta:
         model = Vote
-        fields = ['vote_type', 'owner']
+        fields = ['vote_type']
 
 
 class ForumForm(forms.ModelForm):

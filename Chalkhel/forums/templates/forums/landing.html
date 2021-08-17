@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
@@ -11,4 +11,61 @@
     <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
     <a class="ml-2" href="{% url 'login' %}">Sign In</a>
   </body>
+</html> -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChalKhel</title>
+    <link rel="stylesheet" type="text/css" href="{% static '/chalkhel/landingtest.css' %}">
+</head>
+<body>
+    <section class="top">
+        <h1 id="header">ChalKhel</h1>
+        <div class="block">
+        <h2 id="sub-heading">Are you a Sport's nerd?</h2>
+        <p>What are you waiting for? Come join us</p>
+        <p>A place for every thing sports</p>
+        </div>
+        <div class="registerbox">
+        </div>
+        <img src="{% static '/chalkhel/itop1.svg' %}" alt="Not Found" id="top">
+        <div class="container">
+        <button class="btn1" id="logIn">
+          <a href="{% url 'login' %}" style="text-decoration: none !important; color: inherit;">
+            Log In
+          </a>
+        </button>
+        <button class="btn2" id="signUp">
+          <a href="{% url 'register' %}" style="text-decoration: none !important; color: inherit;">
+            Sign Up
+          </a>
+        </button>
+        </div>
+    </section>
+    <section class="mid">
+        <div class="box1">
+          Create
+        </div>
+        <div class="box2">
+          Be A Part Of
+        </div>
+        <div class="box3">
+          Get Involved
+        </div>
+    </section>
+    <section class="bottom">
+        <div class="container1">
+            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Harum dolorum, maiores quasi, est debitis voluptatum labore asperiores minima nesciunt amet eius eveniet, sed fugit quod repellendus quisquam expedita aut dignissimos modi et? Dicta veniam, tenetur officia totam voluptas amet ex, aliquid iste hic, optio eos. Nihil, id tempore! Sequi ab voluptas accusantium perferendis a, tempora quia suscipit amet consequuntur quod recusandae tempore blanditiis sed aperiam officia temporibus nam dolorem rerum nisi? Repellendus mollitia dolorem, amet voluptatem pariatur obcaecati. Consectetur odit asperiores reiciendis iusto totam fuga officiis cumque porro? Temporibus reprehenderit, ducimus consequatur voluptas fugiat quaerat voluptatibus iste iusto eveniet earum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, voluptatibus.</p>
+        </div>
+        <img src="{% static '/chalkhel/imagebottom.svg' %}" alt="imagebottom">
+    </section>
+    <footer id="footer">
+       <p>&copy Chalkhel 2021 All Rights Reserved</p>
+    </footer>
+</body>
+<!-- <script src="landingtest.js"></script> -->
 </html>

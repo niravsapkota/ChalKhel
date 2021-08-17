@@ -1,26 +1,56 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'forums_forum_list' %}">Forum Listing</a></p>
-<table class="table">
-<tr>
-<td>ID</td><td>Link</td>
-    <td>name</td>
-    <td>slug</td>
-    <td>created</td>
-    <td>last_updated</td>
-    <td>member_count</td>
-</tr>
-{% for object in object_list %}
-<tr>
-    <td>{{object.pk}}</td>
-    <td><a href="{{object.get_absolute_url}}">{{object}}</a></td>
-    <td>{{ object.name }}</td>
-    <td>{{ object.slug }}</td>
-    <td>{{ object.created }}</td>
-    <td>{{ object.last_updated }}</td>
-    <td>{{ object.member_count }}</td>
-</tr>
-{% endfor %}
-</table><a class="btn btn-primary" href="{% url 'forums_forum_create' %}">Create new Forum</a>
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row bg-light">
+        <div class="col-11 border-right">
+          <!-- <ul class="nav border rounded">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'my-profile-hidden-posts' %}" tabindex="-1">Hidden</a>
+            </li>
+            <a class="btn btn-default" href="{% url 'forums_profile_list' %}">Profile Listing</a>
+          </ul> -->
+
+  <div class=" my-3 p-3 border rounded bg-white">
+    <div class="justify-content-between align-items-center mb-3">
+      <!-- <p><a class="btn btn-default" href="{% url 'forums_forum_list' %}">Forum Listing</a></p> -->
+      <table class="table">
+      <tr>
+        <td>Name</td>
+          <td>members</td>
+          <td>bio</td>
+          <td>created</td>
+          <td>Follow</td>
+      </tr>
+      {% for object in object_list %}
+      <tr>
+          <td><a href="{{object.get_absolute_url}}">{{object}}</a></td>
+          <td>{{ object.member_count }}</td>
+          <td>{{ object.bio }}</td>
+          <td>{{ object.created }}</td>
+          <td>
+            {% if request.user.is_authenticated %}
+              {% if object.id in followed_id %}
+                <form action="{% url 'forums_forummember_delete' pk=object.forumfollow %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="forum" value="{{ object.id }}">
+                  <button type="submit" class="btn btn-primary my-2">Unfollow</button>
+                </form>
+              {% else %}
+                <form action="{% url 'forums_forummember_create' %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="forum" value="{{ object.id }}">
+                  <button type="submit" class="btn btn-primary my-2">Follow</button>
+                </form>
+              {% endif %}
+            {% endif %}
+          </td>
+      </tr>
+      {% endfor %}
+      <!-- </table><a class="btn btn-primary" href="{% url 'forums_forum_create' %}">Create new Forum</a> -->
+    </div>
+  </div>
+</div>
+</div>
+</div>
 {% endblock %}

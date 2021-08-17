@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
+    <div class="content-section mx-auto card p-4" style="width: 30rem; margin: 20vh 0px auto">
+      {% if 'login' in request.path %}
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Log In</legend>
                 {{ form|crispy }}
             </fieldset>
-            <div class="form-group">
+            <div class="form-group my-3">
                 <button class="btn btn-outline-info" type="submit">Login</button>
             </div>
         </form>
@@ -18,4 +19,13 @@
             </small>
         </div>
     </div>
+    {%else%}
+    <a href="{% url 'login' %}">
+      <div class="form-group my-3">
+        <button class="btn btn-outline-info" type="submit">
+          Login
+        </button>
+      </div>
+    </a>
+    {%endif%}
 {% endblock content %}

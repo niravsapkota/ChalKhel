@@ -12,30 +12,16 @@
 <div class="container rounded bg-white mt-5 mb-5">
     <div class="row bg-light">
         <div class="col-11 border-right">
-          <ul class="nav border rounded">
+          <!-- <ul class="nav border rounded">
             <a class="btn btn-default" href="{% url 'forums_post_list' %}">Post Listing</a>
-          </ul>
+          </ul> -->
 
   <div class=" my-3 p-3 py-5 border rounded bg-white">
     <div class="justify-content-between align-items-center mb-3">
       <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
-      <div id="div_id_forum" class="form-group">
-        <label for="id_forum" class=" requiredField">
-            Forum
-            <span class="asteriskField">*</span>
-        </label>
-        <div class="">
-          <select name="forum" class="select form-control form-control" required="" id="id_forum">
-            <option value="" selected="">---------</option>
-
-            <option value="2">Forum object (2)</option>
-            <option value="1">Forum object (1)</option>
-          </select>
-        </div>
-
-    </div>
+      {{form.forum|as_crispy_field}}
       <!-- {{form|crispy}} -->
       <div id="div_id_name" class="form-group">
         <label for="id_name" class=" requiredField">
@@ -68,9 +54,13 @@
               </video>
           </div>
           <!-- <input type="file" name="userprofile_picture"  id="filePhoto" /> -->
-          <input type="file" name="media_content" accept="image/png, image/jpeg, image/gif, video/quicktime, video/mp4"
+          <input type="file" enctype="multipart/form-data" name="media_content" accept="image/png, image/jpeg, image/gif, video/quicktime, video/mp4"
           class="position-absolute bg-dark start-0" id="filePhoto" style="opacity:25%; width:240px; height:120%; top:-50px; z-index:3; cursor:pointer;">
+          <button class="btn btn-primary bg-transparent border-0" type="button" onclick="resetImage()">
+            <i class="bi bi-x"></i>
+          </button>
       </div>
+
 
 
       <!-- {{ form.hidden|as_crispy_field }} -->
